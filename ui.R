@@ -60,6 +60,10 @@ shinyUI(fluidPage(
                          p("You might observe no change in the outputs after clicking 'Apply Changes'. Wait for few seconds. As soon as all the cumputations
                            are over in back-end results will be refreshed",
                            align = "justify"),
+                         h4(p("Download Sample Input File")),
+                         downloadButton('downloadData', 'Download Example file'),
+                         p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
+                         img(src = "example1.png"), #, height = 280, width = 400
                          verbatimTextOutput("start"))
                 ,
                 

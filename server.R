@@ -525,5 +525,13 @@ output$flowplot <- renderPlot({
     cat("Calculation Completed")
     }
   })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() { "Nokia_Lumia_reviews.txt" },
+    content = function(file) {
+      writeLines(readLines("data/Nokia_Lumia_reviews.txt"), file)
+    }
+  )
+  
 
 })
