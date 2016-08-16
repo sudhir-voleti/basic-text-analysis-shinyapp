@@ -30,6 +30,8 @@ shinyUI(fluidPage(
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
     
     numericInput("seg", "Number of Segments", 4),
+    numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
+    numericInput("connection", "Number of Max Connection with Central Node", 5),
     
 #     numericInput("tdmfreq", "Minimum frequency of terms for Topic Model:", 2),
 #     
@@ -60,12 +62,13 @@ shinyUI(fluidPage(
                          p("You might observe no change in the outputs after clicking 'Apply Changes'. Wait for few seconds. As soon as all the cumputations
                            are over in back-end results will be refreshed",
                            align = "justify"),
-                         h4(p("Download Sample Input File")),
-                         downloadButton('downloadData', 'Download Example file'),
-                         p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
-                         img(src = "example1.png"), #, height = 280, width = 400
+                          #, height = 280, width = 400
                          verbatimTextOutput("start"))
                 ,
+                tabPanel("Example dataset", h4(p("Download Sample text file")), 
+                         downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
+                         p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
+                         img(src = "example1.png")),
                 
                 tabPanel("TDM & Word Cloud",h4("Term Document Matrix [1:10,1:10"),
                          verbatimTextOutput("dtmsummary"),
@@ -76,7 +79,7 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of wordcloud"),
                          verbatimTextOutput("dtmsummary1")),
                 tabPanel("Term Co-occurrence",
-                         h4("Co-occurrence (Top 50 Term)"),
+                         #h4("Co-occurrence (Top 50 Term)"),
                          plotOutput("wordword",height = 700, width = 700)),
                 #                         
                 tabPanel("Segmentation - Summary",
