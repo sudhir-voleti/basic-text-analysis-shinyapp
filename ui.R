@@ -92,7 +92,9 @@ shinyUI(fluidPage(
                 
                 tabPanel("Segmentation - Word cloud",uiOutput("segplots")),
                 tabPanel("Segmentation - Co-occurrence",uiOutput("segcoocrplots")),
-                tabPanel("Segmentation - Data",dataTableOutput("table0")),
+                tabPanel("Segmentation - Data",br(),br(),
+                         downloadButton('downloadData3', 'Downlaod Segmentation data (Works only in browser)'), br(),br(),
+                         dataTableOutput("table0")),
                 
                 tabPanel("Sentiment Analysis",
                          h4("Sentiment Score across Documents"),
@@ -102,7 +104,9 @@ shinyUI(fluidPage(
                          h4("Negative Words word cloud"),
                          plotOutput("negplot",height = 600, width = 700)),
                 
-                tabPanel("Sentiment Score Data",dataTableOutput("table"))
+                tabPanel("Sentiment Score Data",br(),br(),
+                         downloadButton('downloadData2', 'Downlaod Sentiemnt Scores (Works only in browser)'), br(),br(),
+                         dataTableOutput("table"))
                 #                         
                          )
                 )

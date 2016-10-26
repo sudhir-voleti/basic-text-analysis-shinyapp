@@ -566,10 +566,10 @@ output$flowplot <- renderPlot({
   abline(h=0)
 })
 
-  output$table <- renderDataTable({
-    if (is.null(input$file)) {return(NULL)}
-    else {
-      
+t0 = reactive({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    
     p1 = p()
     d = data.frame(p1[[1]]$all$polarity,dataset())
     d = d[,c(2,1,3)]; colnames(d) = c("Doc.id","Polarity Score","Document")
@@ -577,17 +577,28 @@ output$flowplot <- renderPlot({
     test = merge(da(),d,by.x ="Doc.id", by.y= "Doc.id", all=T)
     
     test}
-    
-  }, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
   
-  output$table0 <- renderDataTable({
+  
+})
+  output$table <- renderDataTable({
+    t0()
+  }, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
+
+  
+  
+  t1 = reactive({
     if (is.null(input$file)) {return(NULL)}
     else {
       
       tb = da()
       test = merge(tb,dataset(),by.x ="Doc.id", by.y= "Doc.id", all=T)
       return(test)
-      }
+    }
+    
+  })
+    
+  output$table0 <- renderDataTable({
+    t1()
       }, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
   
   output$start = renderPrint({
@@ -603,6 +614,19 @@ output$flowplot <- renderPlot({
     filename = function() { "Nokia_Lumia_reviews.txt" },
     content = function(file) {
       writeLines(readLines("data/Nokia_Lumia_reviews.txt"), file)
+    }
+  )
+  
+  output$downloadData2 <- downloadHandler(
+    filename = function() { "Segmentation file.csv" },
+    content = function(file) {
+      write.csv(t0(), file, row.names=F)
+    })
+  
+  output$downloadData3 <- downloadHandler(
+    filename = function() { "Sentiment Score.csv" },
+    content = function(file) {
+      write.csv(t1(), file, row.names=F)
     }
   )
   
