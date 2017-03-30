@@ -5,7 +5,7 @@
 library("shiny")
 library("tm")
 library("wordcloud")
-library("qdap")
+# library("qdap")
 library("RWeka")
 library("igraph")
 
@@ -456,133 +456,133 @@ for (i in 1:max_plots) {
 
 #-----------------------------------------
 
-p  = reactive({
-  
-  
-  progress <- shiny::Progress$new(session, min=6, max=10)
-  on.exit(progress$close())
-  progress$set(message = 'Sentiment Analysis Started',
-               detail = 'This may take a while...')
-  progress$set(value = 6)
-  
-  # head(data$Document)
-  
-  data = dataset()
-  data$Document = gsub("<.*?>", "", data$Document)
-  data$Document = gsub("/", "", data$Document) 
-  data$Document = gsub("\\\\", "", data$Document) 
-  data$Document = gsub("\\)", "", data$Document)
-  data$Document = gsub("\\(", "", data$Document)
-  
-  data$Document =  tolower(data$Document)
-  
-  progress$set(message = 'Calculating Sentiment Score',
-               detail = 'This may take a while...')
-  progress$set(value = 7)
-  
-  p = with(data, polarity(Document, Doc.id))
-  
-  
-  progress$set(message = 'Identifying positive/negative words',
-               detail = 'This may take a while...')
-  progress$set(value = 8)
-  
-  pwords = gsub(" ","-",setdiff(unique(unlist(p$all$pos.words)),"-"))
-  nwords = gsub(" ","-",setdiff(unique(unlist(p$all$neg.words)),"-"))
-  
-  repl = c(pwords[grep("-",pwords)],nwords[grep("-",nwords)])
-  
-  progress$set(message = 'Creating Positive/Negative TDMS',
-               detail = 'This may take a while...')
-  progress$set(value = 9)
-  
-  if (length(repl) != 0) {
-  text = data$Document
-  for (i in 1:length(repl)){
-    fterm = gsub("-"," ",repl[i])
-    rterm = repl[i]
-    text = gsub(fterm,rterm,text)
-  }
-  }
-  else {
-    text = data$Document 
-  }
-  myCorpus = Corpus(VectorSource(text))
-  tdm = TermDocumentMatrix(myCorpus)
-  dim(tdm)
-  pos.tdm = tdm[!is.na(match(row.names(tdm),pwords)),]
-  neg.tdm = tdm[!is.na(match(row.names(tdm),nwords)),]
-  out = list(p, pos.tdm,neg.tdm)
-  
-  progress$set(message = 'Storing Results',
-               detail = 'This may take a while...')
-  progress$set(value = 10)
-  return(out)
-  
-  
-    })
+# p  = reactive({
+#   
+#   
+#   progress <- shiny::Progress$new(session, min=6, max=10)
+#   on.exit(progress$close())
+#   progress$set(message = 'Sentiment Analysis Started',
+#                detail = 'This may take a while...')
+#   progress$set(value = 6)
+#   
+#   # head(data$Document)
+#   
+#   data = dataset()
+#   data$Document = gsub("<.*?>", "", data$Document)
+#   data$Document = gsub("/", "", data$Document) 
+#   data$Document = gsub("\\\\", "", data$Document) 
+#   data$Document = gsub("\\)", "", data$Document)
+#   data$Document = gsub("\\(", "", data$Document)
+#   
+#   data$Document =  tolower(data$Document)
+#   
+#   progress$set(message = 'Calculating Sentiment Score',
+#                detail = 'This may take a while...')
+#   progress$set(value = 7)
+#   
+#   p = with(data, polarity(Document, Doc.id))
+#   
+#   
+#   progress$set(message = 'Identifying positive/negative words',
+#                detail = 'This may take a while...')
+#   progress$set(value = 8)
+#   
+#   pwords = gsub(" ","-",setdiff(unique(unlist(p$all$pos.words)),"-"))
+#   nwords = gsub(" ","-",setdiff(unique(unlist(p$all$neg.words)),"-"))
+#   
+#   repl = c(pwords[grep("-",pwords)],nwords[grep("-",nwords)])
+#   
+#   progress$set(message = 'Creating Positive/Negative TDMS',
+#                detail = 'This may take a while...')
+#   progress$set(value = 9)
+#   
+#   if (length(repl) != 0) {
+#   text = data$Document
+#   for (i in 1:length(repl)){
+#     fterm = gsub("-"," ",repl[i])
+#     rterm = repl[i]
+#     text = gsub(fterm,rterm,text)
+#   }
+#   }
+#   else {
+#     text = data$Document 
+#   }
+#   myCorpus = Corpus(VectorSource(text))
+#   tdm = TermDocumentMatrix(myCorpus)
+#   dim(tdm)
+#   pos.tdm = tdm[!is.na(match(row.names(tdm),pwords)),]
+#   neg.tdm = tdm[!is.na(match(row.names(tdm),nwords)),]
+#   out = list(p, pos.tdm,neg.tdm)
+#   
+#   progress$set(message = 'Storing Results',
+#                detail = 'This may take a while...')
+#   progress$set(value = 10)
+#   return(out)
+#   
+#   
+#     })
 
-output$posplot <- renderPlot({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    
-   p1 = p()
-   pos.tdm = p1[[2]]
-   m  = as.matrix(pos.tdm)
-   v = sort(rowSums(m), decreasing = TRUE)
-   wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
-  }
-})
-
-
-output$negplot <- renderPlot({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    
-  p1 = p()
-  neg.tdm = p1[[3]]
-  m  = as.matrix(neg.tdm)
-  v = sort(rowSums(m), decreasing = TRUE)
-  wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
-  }
-})
+# output$posplot <- renderPlot({
+#   if (is.null(input$file)) {return(NULL)}
+#   else {
+#     
+#    p1 = p()
+#    pos.tdm = p1[[2]]
+#    m  = as.matrix(pos.tdm)
+#    v = sort(rowSums(m), decreasing = TRUE)
+#    wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
+#   }
+# })
 
 
-output$negplot <- renderPlot({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    
-  p1 = p()
-  neg.tdm = p1[[3]]
-  m  = as.matrix(neg.tdm)
-  v = sort(rowSums(m), decreasing = TRUE)
-  wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
-  }
-})
+# output$negplot <- renderPlot({
+#   if (is.null(input$file)) {return(NULL)}
+#   else {
+#     
+#   p1 = p()
+#   neg.tdm = p1[[3]]
+#   m  = as.matrix(neg.tdm)
+#   v = sort(rowSums(m), decreasing = TRUE)
+#   wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
+#   }
+# })
 
-output$flowplot <- renderPlot({
-  p1 = p()
-  plot(p1[[1]]$all$polarity, type = "l", ylab = "Polarity Score",xlab = "Document Number")
-  abline(h=0)
-})
 
-t0 = reactive({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    
-    p1 = p()
-    d = data.frame(p1[[1]]$all$polarity,dataset())
-    d = d[,c(2,1,3)]; colnames(d) = c("Doc.id","Polarity Score","Document")
-    
-    test = merge(da(),d,by.x ="Doc.id", by.y= "Doc.id", all=T)
-    
-    test}
-  
-  
-})
-  output$table <- renderDataTable({
-    t0()
-  }, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
+# output$negplot <- renderPlot({
+#   if (is.null(input$file)) {return(NULL)}
+#   else {
+#     
+#   p1 = p()
+#   neg.tdm = p1[[3]]
+#   m  = as.matrix(neg.tdm)
+#   v = sort(rowSums(m), decreasing = TRUE)
+#   wordcloud(names(v), v, scale=c(4,1),input$freq, max.words=input$max,colors=brewer.pal(8, "Dark2"))
+#   }
+# })
+
+# output$flowplot <- renderPlot({
+#   p1 = p()
+#   plot(p1[[1]]$all$polarity, type = "l", ylab = "Polarity Score",xlab = "Document Number")
+#   abline(h=0)
+# })
+
+# t0 = reactive({
+#   if (is.null(input$file)) {return(NULL)}
+#   else {
+#     
+#     p1 = p()
+#     d = data.frame(p1[[1]]$all$polarity,dataset())
+#     d = d[,c(2,1,3)]; colnames(d) = c("Doc.id","Polarity Score","Document")
+#     
+#     test = merge(da(),d,by.x ="Doc.id", by.y= "Doc.id", all=T)
+#     
+#     test}
+#   
+#   
+# })
+#   output$table <- renderDataTable({
+#     t0()
+#   }, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
 
   
   
