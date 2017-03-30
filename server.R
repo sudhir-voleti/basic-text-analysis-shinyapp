@@ -190,7 +190,8 @@ shinyServer(function(input, output,session) {
       a13 = as.matrix(a11[a12])
       
       #x1 = tm_map(x1, stripWhitespace)
-      x1 = unlist(lapply(x1, content)) 
+      x1 = unlist(lapply(x1,`[[`,1)) 
+      x1 = x1[1:(length(x1)-1)]
       for (i in 1:nrow(a13)){    
         focal.term = gsub("\\.", " ", rownames(a13)[i])
         replacement.term = gsub(" ", "-", focal.term)
