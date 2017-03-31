@@ -120,7 +120,7 @@ shinyServer(function(input, output,session) {
      
       text  =  x;  rm(x)
       
-      stp_word1 = stopwords('english')
+      stp_word1 = tm::stopwords('en')
       stp_word2 = readLines("data/stopwords.txt")
       comn  = unique(c(stp_word1, stp_word2))
       stp_word = unique(c(gsub("'","",comn),comn))
