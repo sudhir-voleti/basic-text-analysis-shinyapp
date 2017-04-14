@@ -2,18 +2,17 @@
 #               Basic Text Analysis             #
 #################################################
 
-library("shiny")
-library("tm")
-library("wordcloud")
-# library("qdap")
-library("RWeka")
+library(shiny)
+library(text2vec)
+library(tm)
+library(tokenizers)
+library(wordcloud)
+library(slam)
 
 
 shinyUI(fluidPage(
   
-   tags$head(includeScript("google_analytics.js")),
-  
-  titlePanel("Basic Text Analysis"),
+ titlePanel("Basic Text Analysis"),
   
   # Input in sidepanel:
   sidebarPanel(
@@ -23,23 +22,14 @@ shinyUI(fluidPage(
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
     selectInput("ws", "Weighing Scheme", 
-                c("tf","tf-idf"), selected = "tf"),
+                c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
     
     sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 1,  max = 50, value = 4),
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
     
-    numericInput("seg", "Number of Segments", 4),
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
-    
-#     numericInput("tdmfreq", "Minimum frequency of terms for Topic Model:", 2),
-#     
-#     h6(div(textOutput("caption1"),style = "color:Blue")),
-#     
-#     h6(div(textOutput("caption2"))),
-#     
-#     numericInput("topic", "Number of Topics to fit:", 2),
     
     submitButton(text = "Apply Changes", icon("refresh"))
     
@@ -79,37 +69,11 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of Wordcloud"),
                          verbatimTextOutput("dtmsummary1")),
                 tabPanel("Term Co-occurrence",
-                         #h4("Co-occurrence (Top 50 Term)"),
-                         plotOutput("wordword",height = 700, width = 700)),
-                #                         
-                tabPanel("Segmentation - Summary",
-                         h4("Principal component plot"),
-                         plotOutput("pcaplot",height = 600, width = 700),
-                         h4("Summary"),
-                         verbatimTextOutput("summary")),
-               
-                
-                
-                tabPanel("Segmentation - Word cloud",uiOutput("segplots")),
-                tabPanel("Segmentation - Co-occurrence",uiOutput("segcoocrplots")),
-                tabPanel("Segmentation - Data",br(),br(),
-                         downloadButton('downloadData3', 'Downlaod Segmentation data (Works only in browser)'), br(),br(),
-                         dataTableOutput("table0"))
-                
-                # tabPanel("Sentiment Analysis",
-                #          h4("Sentiment Score across Documents"),
-                #          plotOutput("flowplot",height = 600, width = 700),
-                #          h4("Postive Words word cloud"),
-                #          plotOutput("posplot",height = 600, width = 700),
-                #          h4("Negative Words word cloud"),
-                #          plotOutput("negplot",height = 600, width = 700)),
-                # 
-                # tabPanel("Sentiment Score Data",br(),br(),
-                #          downloadButton('downloadData2', 'Downlaod Sentiemnt Scores (Works only in browser)'), br(),br(),
-                #          dataTableOutput("table"))
-                #                         
-                         )
+                         plotOutput("cog.dtm",height = 700, width = 700),
+                         plotOutput("cog.tcm",height = 700, width = 700))
+
                 )
-  
-)
-)
+           )
+       )
+    )
+
