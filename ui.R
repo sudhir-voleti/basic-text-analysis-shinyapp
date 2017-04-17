@@ -24,7 +24,7 @@ shinyUI(fluidPage(
     selectInput("ws", "Weighing Scheme", 
                 c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
     
-    sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 1,  max = 50, value = 4),
+    sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 0,  max = 100, value = 2),
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
     
