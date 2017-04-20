@@ -8,6 +8,11 @@ library(tm)
 library(tokenizers)
 library(wordcloud)
 library(slam)
+library(stringi)
+library(magrittr)
+library(tidytext)
+library(dplyr)
+library(tidyr)
 
 
 shinyUI(fluidPage(
@@ -31,15 +36,16 @@ shinyUI(fluidPage(
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
     
+    textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
+    sliderInput("window",'Concordance Window',min = 2,max = 100,5),
+    
     submitButton(text = "Apply Changes", icon("refresh"))
     
   ),
   
   # Main Panel:
   mainPanel( 
-    
-    
-    tabsetPanel(type = "tabs",
+        tabsetPanel(type = "tabs",
                 #
                 tabPanel("Overview",h4(p("How to use this App")),
                          
@@ -69,9 +75,13 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of Wordcloud"),
                          verbatimTextOutput("dtmsummary1")),
                 tabPanel("Term Co-occurrence",
-                         plotOutput("cog.dtm",height = 700, width = 700),
-                         plotOutput("cog.tcm",height = 700, width = 700))
-
+                         plotOutput("cog.dtm",height = 700, width = 700)
+                         ),
+                tabPanel("Bigram",
+                         verbatimTextOutput("bi.grams")
+                         ),
+                tabPanel("Concordance",
+                         verbatimTextOutput("concordance"))
                 )
            )
        )

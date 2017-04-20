@@ -29,12 +29,15 @@ dtm_tcm =  reactive({
                             min.dtm.freq = input$freq,
                             skip.grams.window = 10)
   if (input$ws == "weightTf") {
-    dtm = as.DocumentTermMatrix(dtm.tcm$dtm, weighting = weightTf)  
+    dtm = as.matrix(dtm.tcm$dtm)  
   } 
   
   if (input$ws == "weightTfIdf"){
-    dtm = as.DocumentTermMatrix(dtm.tcm$dtm, weighting = weightTfIdf)
-  }
+    dtm = as.matrix(transform_tfidf(dtm.tcm$dtm))
+    tempd = dtm*0
+    tempd[dtm > 0] = 1
+    dtm = dtm + tempd
+      }
   
   tcm = dtm.tcm$tcm
   dtm_tcm_obj = list(dtm = dtm, tcm = tcm)
@@ -57,27 +60,27 @@ output$cog.dtm <- renderPlot({
   
   distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
                   mattype = "DTM",
-                  title = "TCM from DTM Adjacency - Graph", # title for the graph
+                  title = "COG from DTM Adjacency", # title for the graph
                   s=input$nodes,    # no. of central nodes
                   k1 = input$connection)  # No. of Connection with central Nodes
       })
 
-output$cog.tcm <- renderPlot({
-  
-distill.cog.tcm(mat1=dtm_tcm()$tcm, # input TCM MAT,
-                  mattype = "TCM",
-                  title = "TCM from glove algorithm - Graph ", # title for the graph
-                  s=input$nodes,    # no. of central nodes
-                  k1 = input$connection)  # No. of Connection with central Nodes
-  
-      })
+# output$cog.tcm <- renderPlot({
+#   
+# distill.cog.tcm(mat1=dtm_tcm()$tcm, # input TCM MAT,
+#                   mattype = "TCM",
+#                   title = "TCM from glove algorithm - Graph ", # title for the graph
+#                   s=input$nodes,    # no. of central nodes
+#                   k1 = input$connection)  # No. of Connection with central Nodes
+#   
+#       })
         
 
 output$dtmsummary  <- renderPrint({
       if (is.null(input$file)) {return(NULL)}
   else {
     sortedobj = dtm_tcm()$dtm[,order(wordcounts(), decreasing = T)]
-    inspect(t(sortedobj[1:10,1:10]))
+    (t(sortedobj[1:10,1:10]))
   }
       })
 
@@ -86,6 +89,18 @@ output$dtmsummary1  <- renderPrint({
   else {
     data.frame(Counts = wordcounts()[order(wordcounts(), decreasing = T)][1:input$max])
   }
+})
+
+
+output$concordance = renderPrint({
+  a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
+  a0
+})
+
+output$bi.grams = renderPrint({
+  a0 = bigram.collocation(dataset()$Document)
+  a0 = a0[order(a0$n, decreasing = T),]
+  a0
 })
 
 output$downloadData1 <- downloadHandler(

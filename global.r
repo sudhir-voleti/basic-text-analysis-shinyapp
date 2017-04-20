@@ -1,6 +1,6 @@
 
 text.clean = function(x)                    # text data
-{ require("tm")
+{ #require("tm")
   x  =  gsub("<.*?>", " ", x)               # regex for removing HTML tags
   x  =  iconv(x, "latin1", "ASCII", sub="") # Keep only ASCII characters
   x  =  gsub("[^[:alnum:]]", " ", x)        # keep only alpha numeric
@@ -48,8 +48,8 @@ dtm.word.cloud <- function(count = count, max.words = 100,title = "Title"){
   if (class(tsum) != "numeric") stop("Give input as wordcount or DocumentTermMatrix")
   
   wordcloud(names(tsum), tsum,     # words, their freqs 
-            scale = c(4, 0.5),     # range of word sizes
-            # min.frq = min.frq,                     # min.freq of words to consider
+            scale = c(4, 1),     # range of word sizes
+            min.freq = .01,                     # min.freq of words to consider
             max.words = max.words,       # max #words
             colors = brewer.pal(8, "Dark2"))    # Plot results in a word cloud 
   title(sub = title)     # title for the wordcloud display
@@ -230,3 +230,98 @@ dtm.tcm.creator <- function(text,id = "",
   out = list(dtm = dtm_m, tcm = tcm)
   return(out)
 }
+
+
+bigram.collocation <- function(text1){   # text1 from readLines() is input
+  
+  # require(magrittr)
+  # require(tidytext)
+  # require(dplyr)
+  # require(tidyr)
+  
+  text1 = gsub('<.*?>', "", text1)   # drop html junk
+  
+  # create words df
+  text_df <- data_frame(text1) %>% 
+    unnest_tokens(word, text1) %>%
+    anti_join(stop_words) %>% 
+    count(word, sort = TRUE) #%>% 
+  text_df
+  
+  # create bigrams df
+  bigram_df <- data_frame(text1) %>% 
+    unnest_tokens(bigrams, text1, token = "ngrams", n = 2) %>%
+    count(bigrams, sort = TRUE) %>%
+    ungroup() %>%
+    
+    # separate & filter bigrams for stopwords
+    separate(bigrams, c("word1", "word2"), sep = " ") %>%
+    dplyr::filter(!(word1 %in% stop_words$word)) %>%
+    dplyr::filter(!(word2 %in% stop_words$word)) #%>%
+  
+  bigram_df              
+  
+  # create a merged df
+  new_df = bigram_df %>% mutate(k1 = 0) %>% mutate(k2 = 0) # %>%
+  
+  for (i1 in 1:nrow(bigram_df)){
+    
+    a0 = which(bigram_df$word1[i1] == text_df$word) 
+    new_df$k1[i1] = text_df$n[a0]
+    
+    a1 = which(bigram_df$word2[i1] == text_df$word) 
+    new_df$k2[i1] = text_df$n[a1]
+    
+  } # i1 loop ends
+  
+  new_df1 = new_df %>% filter(n > 1) %>% mutate(coll.ratio = (n*nrow(new_df))/(k1*k2)) %>%
+    filter(coll.ratio >= 1) %>%
+    unite(bigram_united, word1, word2) %>%
+    arrange(desc(coll.ratio)) %>% 
+    select(bigram_united, n, coll.ratio) 
+  
+  return(new_df1)
+}   # func ends
+
+
+concordance.r <- function(text1,  # corpus
+                          word1,  # focal word for whcih context is sought
+                          k){     # context window length in words on either side
+  
+  # require(magrittr)
+  # require(tidytext)
+  # require(dplyr)
+  # require(tidyr)
+  
+  text1 = gsub('<.*?>', "", text1)   # drop html junk
+  
+  text_df <- data_frame(text1) %>% 
+    unnest_tokens(word, text1) %>% 
+    
+    # build an index for word positions in the corpus
+    mutate(index = 1) %>% mutate(wordnum = 1:sum(index)) %>% select(-index) #%>%
+  
+  text_df
+  
+  # locate context words for each instance of the focal word
+  a0 = which(text_df$word == word1)
+  a1 = matrix(0, nrow = length(a0), ncol = 3)
+  colnames(a1) = c("start", "focal", "stop")
+  for (i1 in 1:nrow(a1)){a1[i1, 1] = max(0, a0[i1]-k) 
+  a1[i1, 2] = a0[i1]
+  a1[i1, 3] = min(nrow(text_df), a0[i1]+k)  }
+  head(a1)
+  
+  # require(stringi)
+  # creat a list to store the contexts or concordances of word1  
+  list0 = vector("list", length = length(a0))
+  for (i2 in 1:length(list0)){
+    list0[[i2]] = stri_join(text_df$word[a1[i2,1]:a1[i2, 3]], collapse=" ") } # i2 ends
+  list0[[2]]
+  
+  # read list into dataframe for easier display of output  
+  list_df = data_frame("text")
+  for (i2 in 1:length(a0)){list_df[i2,1] = list0[[i2]]}
+  list_df
+  
+  return(list_df) } # func ends
