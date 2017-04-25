@@ -78,9 +78,21 @@ shinyUI(fluidPage(
                          plotOutput("cog.dtm",height = 700, width = 700)
                          ),
                 tabPanel("Bigram",
+                         h4('Collocations Bigrams'),
+                          p('If a corpus has n word tokens, then it can have at most (n-1) bigrams. However, most of
+                                    these bigram are uninteresting. The interesting ones - termed collocations bigrams - comprise
+                                    those bigrams whose occurrence in the corpus is way more likely than would be true if the 
+                                    constituent words in the bigram randomly came together. Below is the list of all collocations 
+                                    bigrams (top 100, if collocations bigrams are above 100) from the corpus you uploaded on 
+                                    this App',align = "Justify"),
                          verbatimTextOutput("bi.grams")
                          ),
                 tabPanel("Concordance",
+                         h4('Concordance'),
+                         p('Concordance allows you to see the local context around a word of interest. It does so by building a moving window of words before and after the focal word\'s every instance in the corpus. Below is the list of all instances of concordance in the corpus for your word of interest entered in the left side bar panel of this app. You can change the concordance window or word of interest in the left side bar panel.',align = "Justify"),
+                         
+                         
+                         
                          verbatimTextOutput("concordance"))
                 )
            )

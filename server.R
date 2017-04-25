@@ -94,13 +94,19 @@ output$dtmsummary1  <- renderPrint({
 
 output$concordance = renderPrint({
   a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
-  a0
+  concordance = a0$concordance
+  concordance
 })
 
 output$bi.grams = renderPrint({
   a0 = bigram.collocation(dataset()$Document)
   a0 = a0[order(a0$n, decreasing = T),]
-  a0
+  if (nrow(a0) > 100){
+    a1 = a0[1:100,]
+  } else {
+    a1 = a0
+  }
+  a1
 })
 
 output$downloadData1 <- downloadHandler(

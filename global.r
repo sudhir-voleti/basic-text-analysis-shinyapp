@@ -279,7 +279,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     unite(bigram_united, word1, word2) %>%
     arrange(desc(coll.ratio)) %>% 
     select(bigram_united, n, coll.ratio) 
-  
+  new_df1 = data.frame(new_df1)
   return(new_df1)
 }   # func ends
 
@@ -288,10 +288,10 @@ concordance.r <- function(text1,  # corpus
                           word1,  # focal word for whcih context is sought
                           k){     # context window length in words on either side
   
-  # require(magrittr)
-  # require(tidytext)
-  # require(dplyr)
-  # require(tidyr)
+  require(magrittr)
+  require(tidytext)
+  require(dplyr)
+  require(tidyr)
   
   text1 = gsub('<.*?>', "", text1)   # drop html junk
   
@@ -312,16 +312,18 @@ concordance.r <- function(text1,  # corpus
   a1[i1, 3] = min(nrow(text_df), a0[i1]+k)  }
   head(a1)
   
-  # require(stringi)
+  require(stringi)
   # creat a list to store the contexts or concordances of word1  
   list0 = vector("list", length = length(a0))
   for (i2 in 1:length(list0)){
-    list0[[i2]] = stri_join(text_df$word[a1[i2,1]:a1[i2, 3]], collapse=" ") } # i2 ends
+    list0[[i2]] = stri_join(text_df$word[a1[i2,1]:a1[i2, 3]], collapse=" ") 
+    list0[[i2]] = gsub(word1, paste0('*', word1, '*', collapse=""), list0[[i2]])   # gsub(pattern, replacement, x)
+  } # i2 ends
   list0[[2]]
   
   # read list into dataframe for easier display of output  
-  list_df = data_frame("text")
+  list_df = data.frame(NULL)
   for (i2 in 1:length(a0)){list_df[i2,1] = list0[[i2]]}
-  list_df
+  colnames(list_df) = 'concordance'
   
   return(list_df) } # func ends
