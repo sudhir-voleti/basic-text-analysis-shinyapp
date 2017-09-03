@@ -33,14 +33,16 @@ dtm_tcm =  reactive({
   } 
   
   if (input$ws == "weightTfIdf"){
-    dtm = as.matrix(transform_tfidf(dtm.tcm$dtm))
+    model_tfidf = TfIdf$new()
+    dtm = as.matrix(model_tfidf$fit_transform(dtm.tcm$dtm))
+    
     tempd = dtm*0
     tempd[dtm > 0] = 1
     dtm = dtm + tempd
-      }
+  }  
   
-  tcm = dtm.tcm$tcm
-  dtm_tcm_obj = list(dtm = dtm, tcm = tcm)
+  # tcm = dtm.tcm$tcm
+  dtm_tcm_obj = list(dtm = dtm)#, tcm = tcm)
 })
 
 wordcounts = reactive({
