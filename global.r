@@ -269,12 +269,12 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
   for (i1 in 1:nrow(bigram_df)){
     
     a0 = which(bigram_df$word1[i1] == text_df$word) 
-    new_df$k1[i1] = text_df$n[a0]
+    ifelse((length(a0) > 0), { new_df$k1[i1] = text_df$n[a0] }, next ) 
     
     a1 = which(bigram_df$word2[i1] == text_df$word) 
-    new_df$k2[i1] = text_df$n[a1]
+    ifelse((length(a1) > 0), { new_df$k2[i1] = text_df$n[a1] }, next ) 
     
-  } # i1 loop ends
+} # i1 loop ends
   
   new_df1 = new_df %>% filter(n > 1) %>% mutate(coll.ratio = (n*nrow(new_df))/(k1*k2)) %>%
     filter(coll.ratio >= 1) %>%
