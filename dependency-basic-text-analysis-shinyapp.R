@@ -10,6 +10,7 @@ try(require(magrittr) || install.packages("magrittr"))
 try(require(tidytext) || install.packages("tidytext"))
 try(require(dplyr) || install.packages("dplyr"))
 try(require(tidyr) || install.packages("tidyr"))
+try(require(igraph)|| install.packages("igraph"))
 
 
 library(shiny)
@@ -25,3 +26,4 @@ library(magrittr)
 library(tidytext)
 library(dplyr)
 library(tidyr)
+library(igraph)
