@@ -280,7 +280,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     filter(coll.ratio >= 1) %>%
     unite(bigram_united, word1, word2) %>%
     arrange(desc(coll.ratio)) %>% 
-    select(bigram_united, n, coll.ratio) 
+    dplyr::select(bigram_united, n, coll.ratio) 
   new_df1 = data.frame(new_df1)
   return(new_df1)
 }   # func ends
@@ -301,7 +301,7 @@ concordance.r <- function(text1,  # corpus
     unnest_tokens(word, text1) %>% 
     
     # build an index for word positions in the corpus
-    mutate(index = 1) %>% mutate(wordnum = 1:sum(index)) %>% select(-index) #%>%
+    mutate(index = 1) %>% mutate(wordnum = 1:sum(index)) %>% dplyr::select(-index) #%>%
   
   text_df
   
