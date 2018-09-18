@@ -86,6 +86,15 @@ output$dtmsummary  <- renderPrint({
   }
       })
 
+output$dtmsize  <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    size = dim(t(dtm_tcm()$dtm))
+    dtm_size = paste("The size of the Term Document Matrix is ",size[1],",",size[2],". The first 10 rows are being displayed")
+    return(dtm_size)
+  }
+})
+
 output$dtmsummary1  <- renderPrint({
   if (is.null(input$file)) {return(NULL)}
   else {

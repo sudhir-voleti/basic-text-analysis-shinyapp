@@ -66,7 +66,8 @@ shinyUI(fluidPage(
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                          img(src = "example1.png")),
                 
-                tabPanel("TDM & Word Cloud",h4("Term Document Matrix [1:10,1:10"),
+                tabPanel("TDM & Word Cloud",
+                         verbatimTextOutput("dtmsize"),
                          verbatimTextOutput("dtmsummary"),
                          br(),
                          br(),
