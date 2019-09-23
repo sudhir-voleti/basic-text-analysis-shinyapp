@@ -58,7 +58,7 @@ output$wordcloud <- renderPlot({
   
       })
       
-output$cog.dtm <- renderPlot({
+output$cog.dtm <- renderVisNetwork({
   
   distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
                   mattype = "DTM",

@@ -76,7 +76,7 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of Wordcloud"),
                          verbatimTextOutput("dtmsummary1")),
                 tabPanel("Term Co-occurrence",
-                         plotOutput("cog.dtm",height = 700, width = 700)
+                         visNetworkOutput("cog.dtm",height = 700, width = 700)
                          ),
                 tabPanel("Bigram",
                          h4('Collocations Bigrams'),
