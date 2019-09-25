@@ -4,6 +4,7 @@ try(require(tm) || install.packages("tm"))
 try(require(tokenizers) || install.packages("tokenizers"))
 try(require(wordcloud) || install.packages("wordcloud"))
 try(require(slam) || install.packages("slam"))
+if (!require(visNetwork)) {install.packages("visNetwork")}
 
 try(require(stringi) || install.packages("stringi"))
 try(require(magrittr) || install.packages("magrittr"))
@@ -19,6 +20,7 @@ library(tm)
 library(tokenizers)
 library(wordcloud)
 library(slam)
+library(visNetwork)
 # Update test 123
 
 library(stringi)
