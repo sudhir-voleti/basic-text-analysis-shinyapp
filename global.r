@@ -127,7 +127,108 @@ distill.cog.tcm = function(mat1, # input TCM or DTM MAT
   E(graph)$width <- E(graph)$weight/min(E(graph)$weight)  
   visIgraph(graph,layout = 'layout.kamada.kawai')
 } 
-
+dtm.tcm.creator <- function(text,id = "",
+                            std.clean = TRUE,
+                            std.stop.words = TRUE,
+                            stop.words.additional ,
+                            bigram.encoding = TRUE,
+                            bigram.min.freq = 5,
+                            min.dtm.freq = 2,
+                            skip.grams.window = 5) {
+  
+  # if (class(text) != "character" | length(text) < 3){
+  #   stop("data format Not correct. Make sure it's a character verctor of length above 3")
+  # }
+  
+  stpw1 = readLines("data/stopwords.txt")# stopwords list from git
+  stpw2 = tm::stopwords('english')      # tm package stop word list; tokenizer package has the same name function, hence 'tm::'
+  stpw3  = unique(gsub("'"," ",c(stpw1,stpw2)))
+  
+  if ((id == "")[1]){
+    id = 1:length(text)
+  }
+  
+  if (std.clean == TRUE) {
+    # print("Performing Standard Text Cleaning")
+    text = text.clean(text)
+  }
+  
+  if (std.stop.words == TRUE){
+    # print("Removing Stop Words")
+    stop.words.f = unique(c(stpw3,stop.words.additional))
+    text = removeWords(text,stop.words.f)            # removing stopwords created above
+    text = stripWhitespace(text)                  # removing white spacestop.words.additional
+  }
+  
+  tok_fun = word_tokenizer  # using word & not space tokenizers
+  
+  if (bigram.encoding == TRUE){
+    
+    # data = data.frame(id = 1:length(text),text = text, stringsAsFactors = F)
+    
+    # print("finding bi-grams for encoding with selected criteria")
+    
+    it_0 = itoken( text,
+                   tokenizer = tok_fun,
+                   ids = id,
+                   progressbar = F)
+    
+    vocab = create_vocabulary(it_0, ngram = c(2L, 2L))
+    pruned_vocab = data.frame(prune_vocabulary(vocab, term_count_min = bigram.min.freq))
+    
+    replace_list = pruned_vocab$term[order(pruned_vocab$term_count, decreasing = T)]
+    
+    # Cut the bi-grams upto 200 words
+    
+    if (length(replace_list) > 200){
+      replace_list = replace_list[1:200]
+    }
+    
+    if (length(replace_list) > 1){     # 0, my edit 1
+      text = paste("",text,"")
+      
+      pb <- txtProgressBar(min = 1, max = (length(replace_list)), style = 3) ; i = 0
+      
+      # print(paste("Encoding",length(replace_list),"bi-grams as unigram"))
+      for (term in replace_list){
+        i = i + 1
+        focal.term = gsub("_", " ",term)        # in case dot was word-separator
+        replacement.term = term
+        text = gsub(paste("",focal.term,""),paste("",replacement.term,""), text)
+        # setTxtProgressBar(pb, i)
+      }                  
+    } else {
+      print("No bigram to encode with selected criteria")}
+  }
+  
+  # print("Creating Document Term Matrix")
+  # Create DTM
+  it_m = itoken(text,
+                tokenizer = tok_fun,
+                ids = id,
+                progressbar = F)
+  
+  vocab = create_vocabulary(it_m)
+  pruned_vocab = prune_vocabulary(vocab,
+                                  term_count_min = min.dtm.freq)
+  
+  vectorizer = vocab_vectorizer(pruned_vocab)
+  
+  dtm_m  = create_dtm(it_m, vectorizer)
+  
+  # print("Creating Term Co-occurrence Matrix")
+  
+  # vectorizer = vocab_vectorizer(pruned_vocab,
+  #                               grow_dtm = FALSE,
+  #                               skip_grams_window = skip.grams.window)
+  # 
+  # tcm = create_tcm(it_m, vectorizer) # func to build a TCM
+  
+  # print("Done!!")
+  
+  out = list(dtm = dtm_m)#, tcm = tcm)
+  return(out)
+}
 
 bigram.collocation <- function(text1){   # text1 from readLines() is input
   
