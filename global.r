@@ -243,13 +243,13 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
   text_df <- data_frame(text1) %>% 
     unnest_tokens(word, text1) %>%
     anti_join(stop_words) %>% 
-    count(word, sort = TRUE) #%>% 
+   dplyr::count(word, sort = TRUE) #%>% 
   text_df
   
   # create bigrams df
   bigram_df <- data_frame(text1) %>% 
     unnest_tokens(bigrams, text1, token = "ngrams", n = 2) %>%
-    count(bigrams, sort = TRUE) %>%
+    dplyr::count(bigrams, sort = TRUE) %>%
     ungroup() %>%
     
     # separate & filter bigrams for stopwords
