@@ -232,7 +232,7 @@ bigram_data <- reactive({bigrammed_corpus = replace_bigram(dataset()$Document, m
 output$download_bigram <- output$downloadData1 <- downloadHandler(
   filename = function() { "Bigram_Corpus.csv" },
   content = function(file) {
-    write.csv(bigram_data(), file)
+    write.csv(bigram_data(), file,row.names=FALSE)
   }
 )
 
