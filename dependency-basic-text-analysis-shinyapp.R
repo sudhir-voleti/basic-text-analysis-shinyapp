@@ -30,4 +30,4 @@ library(tidyr)
 library(igraph)
 
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
-if (!require(shinydashboard)) {install.packages("shinydashboard")};  library(shinydashboard)
+if (!require(shinydashboard)) {install.packages("stringr")};  library(stringr)
