@@ -29,3 +29,5 @@ library(dplyr)
 library(tidyr)
 library(igraph)
 
+if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
+if (!require(shinydashboard)) {install.packages("shinydashboard")};  library(shinydashboard)
