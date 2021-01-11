@@ -12,13 +12,15 @@ library(stringi)
 library(magrittr)
 library(tidytext)
 library(dplyr)
+library(visNetwork)
 library(tidyr)
+library(DT)
 
 
 shinyUI(fluidPage(
   
- #titlePanel("Basic Text Analysis"),
-  titlePanel(title=div(img(src="logo.png",align='right'),"Basic Text Analysis")),
+ titlePanel("Basic Text Analysis"),
+  
   # Input in sidepanel:
   sidebarPanel(
     
@@ -59,22 +61,34 @@ shinyUI(fluidPage(
                            are over in back-end results will be refreshed",
                            align = "justify"),
                           #, height = 280, width = 400
-                         verbatimTextOutput("start"))
-                ,
-                tabPanel("Example dataset", h4(p("Download Sample text file")), 
+                         br(),
+                         h4(p("Download Sample text file")),
                          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
-                         img(src = "example1.png")),
-                
-                tabPanel("TDM & Word Cloud",
+                         img(src = "example1.png")
+                         )
+                ,
+                # tabPanel("Example dataset", h4(p("Download Sample text file")),
+                #          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
+                #          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
+                #          img(src = "example1.png")),
+                tabPanel("DTM / TF-IDF",
                          verbatimTextOutput("dtmsize"),
-                         verbatimTextOutput("dtmsummary"),
-                         br(),
-                         br(),
+                         h4("Sample DTM / TF-IDF "),
+                         DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
-                         plotOutput("wordcloud",height = 700, width = 700),
+                         plotOutput("wordcloud",height = 700, width = 700),br(),
+                         #textInput("in",label = "text"),
+                         downloadButton('download_dtm', 'Download DTM / TF-IDF'),br(),
                          h4("Weights Distribution of Wordcloud"),
-                         verbatimTextOutput("dtmsummary1")),
+                         DT::dataTableOutput("dtmsummary1")),
+                # tabPanel("TDM & Word Cloud",
+                #          
+                #          verbatimTextOutput("dtmsummary"),
+                #          br(),
+                #          br(),
+                #          
+                #         ),
                 tabPanel("Term Co-occurrence",
                          visNetworkOutput("cog.dtm",height = 700, width = 700)
                          ),
@@ -86,15 +100,19 @@ shinyUI(fluidPage(
                                     constituent words in the bigram randomly came together. Below is the list of all collocations 
                                     bigrams (top 100, if collocations bigrams are above 100) from the corpus you uploaded on 
                                     this App',align = "Justify"),
-                         verbatimTextOutput("bi.grams")
+                         DT::dataTableOutput("bi.grams"),
+                         h4("Bigram wordcloud"),
+                         plotOutput("bi_word_cloud",height=700,width=700),
+                         h4("Download Bigram Corpus"),
+                         downloadButton("download_bigram","Download Bigram Corpus")
                          ),
                 tabPanel("Concordance",
                          h4('Concordance'),
                          p('Concordance allows you to see the local context around a word of interest. It does so by building a moving window of words before and after the focal word\'s every instance in the corpus. Below is the list of all instances of concordance in the corpus for your word of interest entered in the left side bar panel of this app. You can change the concordance window or word of interest in the left side bar panel.',align = "Justify"),
-                         
-                         
-                         
-                         verbatimTextOutput("concordance"))
+                         #verbatimTextOutput("concordance"))
+                         DT::dataTableOutput("concordance"))
+               
+                
                 )
            )
        )
