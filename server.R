@@ -34,7 +34,7 @@ dtm_tcm =  reactive({
   
   if (input$ws == "weightTfIdf"){
     model_tfidf = TfIdf$new()
-    dtm = as.matrix(model_tfidf$fit_transform(dtm.tcm$dtm))
+    dtm = round(as.matrix(model_tfidf$fit_transform(dtm.tcm$dtm)),2)
     
     tempd = dtm*0
     tempd[dtm > 0] = 1
@@ -45,6 +45,36 @@ dtm_tcm =  reactive({
   dtm_tcm_obj = list(dtm = dtm)#, tcm = tcm)
 })
 
+
+
+ordered_dtm <- reactive({if (is.null(input$file)) {return(NULL)}
+                         else{
+                            mat1= dtm_tcm()$dtm
+                            a = colSums(mat1)
+                            b = order(-a)     # nice syntax for ordering vector in decr order  
+                            mat2 = mat1[,b]
+                            return(mat2)
+                          
+                        }
+                         
+                        })
+
+output$dtm_table <- renderDataTable({
+  
+                          temp <- ordered_dtm()[1:10,1:10]
+                        #  temp <- tem[1:10,1:10]
+                          return(temp)
+                          
+                         # a = colSums(mat1)  # collect colsums into a vector obj a
+                         
+                            # 
+                         # diag(mat2) =  0
+  
+                    })
+
+
+
+
 wordcounts = reactive({
   
   return(dtm.word.count(dtm_tcm()$dtm))
@@ -52,19 +82,32 @@ wordcounts = reactive({
 }) 
 
 output$wordcloud <- renderPlot({
-  tsum = wordcounts()
-  tsum = tsum[order(tsum, decreasing = T)]
-  dtm.word.cloud(count = tsum,max.words = input$max,title = 'Term Frequency Wordcloud')
+  
+  if (is.null(input$file)) {return(NULL)}
+    else{
+      tsum = wordcounts()
+      tsum = tsum[order(tsum, decreasing = T)]
+      dtm.word.cloud(count = tsum,max.words = input$max,title = 'Term Frequency Wordcloud')
+    }
+  
   
       })
-      
+
+
+
+
 output$cog.dtm <- renderVisNetwork({
   
-  distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
-                  mattype = "DTM",
-                  title = "COG from DTM Adjacency", # title for the graph
-                  s=input$nodes,    # no. of central nodes
-                  k1 = input$connection)  # No. of Connection with central Nodes
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
+                    mattype = "DTM",
+                    title = "COG from DTM Adjacency", # title for the graph
+                    s=input$nodes,    # no. of central nodes
+                    k1 = input$connection)  # No. of Connection with central Nodes
+  }
+  
+
       })
 
 # output$cog.tcm <- renderPlot({
@@ -95,7 +138,7 @@ output$dtmsize  <- renderPrint({
   }
 })
 
-output$dtmsummary1  <- renderPrint({
+output$dtmsummary1  <- renderDataTable({
   if (is.null(input$file)) {return(NULL)}
   else {
     data.frame(Counts = wordcounts()[order(wordcounts(), decreasing = T)][1:input$max])
@@ -103,22 +146,98 @@ output$dtmsummary1  <- renderPrint({
 })
 
 
-output$concordance = renderPrint({
-  a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
-  concordance = a0$concordance
-  concordance
+# This is your reactive element.
+df_reactive <- reactive({
+  
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
+    a0 %>%
+      # Filter if input is anywhere, even in other words.
+      filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
+      # Replace complete words with same in HTML.
+      mutate_all(~ gsub(
+        paste(c("\\b(", input$concord.word, ")\\b"), collapse = ""),
+        "<span style='background-color:#6ECFEA;'>\\1</span>",
+        .,
+        TRUE,
+        TRUE
+      )
+      )
+  }
+
 })
 
-output$bi.grams = renderPrint({
-  a0 = bigram.collocation(dataset()$Document)
-  a0 = a0[order(a0$n, decreasing = T),]
-  if (nrow(a0) > 100){
-    a1 = a0[1:100,]
-  } else {
-    a1 = a0
-  }
-  a1
+
+output$concordance = renderDataTable({
+  
+  # a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
+  # concordance = a0
+  # datatable(concordance, escape = F, options = list(dom = "lt"))
+  datatable(df_reactive(), escape = F, options = list(dom = "lt"))
 })
+
+
+bi_gram <- reactive({
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    a0 = bigram.collocation(dataset()$Document)
+    a0$coll.ratio <- round(a0$coll.ratio,2)
+    a0 = a0[order(a0$n, decreasing = T),]
+    if (nrow(a0) > 100){
+      a1 = a0[1:100,]
+    } else {
+      a1 = a0
+    }
+    a1
+  }
+  
+
+})
+
+
+output$bi.grams = renderDataTable({
+  bi_gram()
+  
+})
+
+output$bi_word_cloud <- renderPlot({
+  
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    wordcloud(bi_gram()$bigram_united, bi_gram()$n,     # words, their freqs 
+              scale = c(4, 1),     # range of word sizes
+              min.freq = .01,                     # min.freq of words to consider
+              max.words = input$max,       # max #words
+              colors = brewer.pal(8, "Dark2"))
+  }
+
+})
+
+
+output$download_dtm <- downloadHandler(
+  filename = function() { "dtm.csv" },
+  content = function(file) {
+    
+    new_dtm <- ordered_dtm
+    write.csv(new_dtm, file, row.names=T)
+    
+    
+  }
+)
+
+
+bigram_data <- reactive({bigrammed_corpus = replace_bigram(dataset()$Document, min_freq = 2,stopw_list=unlist(strsplit(input$stopw,",")))})
+
+output$download_bigram <- output$downloadData1 <- downloadHandler(
+  filename = function() { "Bigram_Corpus.csv" },
+  content = function(file) {
+    write.csv(bigram_data(), file)
+  }
+)
+
+
+
 
 output$downloadData1 <- downloadHandler(
     filename = function() { "Nokia_Lumia_reviews.txt" },
