@@ -417,8 +417,7 @@ collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, wor
 # raw_corpus <- speech
 # 
 # 
-raw_corpus <- speech
-stopw_list <- c("independent","pm")
+
 ## == brew func to build bigrams.
 replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
@@ -503,7 +502,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   return(doc_corpus) }    # replace_bigrams() func ends 
 # 
 # # testing on speech
-speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
+#speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
 
 
 # stopw_list <- c("dear","countrymen")
