@@ -458,7 +458,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
   # merging the 2 above dfs
   a2 = dplyr::left_join(a0, a1, by=c("ngram" = "ngram")) %>%
-    dplyr::separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>%
+    separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>%
     dplyr:: select(-ngram)
   a2
   
