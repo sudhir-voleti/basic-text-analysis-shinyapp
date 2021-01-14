@@ -270,7 +270,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     a1 = which(bigram_df$word2[i1] == text_df$word) 
     ifelse((length(a1) > 0), { new_df$k2[i1] = text_df$n[a1] }, next ) 
     
-} # i1 loop ends
+  } # i1 loop ends
   
   new_df1 = new_df %>% filter(n > 1) %>% mutate(coll.ratio = (n*nrow(new_df))/(k1*k2)) %>%
     filter(coll.ratio >= 1) %>%
@@ -509,7 +509,6 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
 # system.time({ bigrammed_corpus = replace_bigram(speech, min_freq = 2,stopw_list = stopw_list) }) # 0.66 secs
 # bigrammed_corpus[1:3,]
 # 
-
 
 
 
