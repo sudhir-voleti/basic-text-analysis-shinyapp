@@ -16,6 +16,7 @@ library(visNetwork)
 library(tidyr)
 library(DT)
 library(stringr)
+library(tools)
 
 shinyUI(fluidPage(
   
@@ -28,9 +29,9 @@ shinyUI(fluidPage(
     
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
-   # selectInput("ws", "Weighing Scheme", 
-    #            c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
-    
+    # selectInput("ws", "Weighing Scheme", 
+    #             c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
+    # 
     sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 0,  max = 100, value = 2),
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
@@ -123,11 +124,21 @@ shinyUI(fluidPage(
                          #verbatimTextOutput("concordance"))
                          DT::dataTableOutput("concordance")),
                 tabPanel("Downloads",
-                         h4("Download DTM/TF-IDF"),
+                         h4("Download DTM"),
+                         #h3("-------------"),
+                         verbatimTextOutput("dtm_text"),
                          downloadButton('download_dtm', 'Download DTM'),br(),
-                        h4("Download TF-IDF"),
-                        downloadButton('download_tfidf', 'Download TF-IDF'),br(),
+                        
+                         
+                         h3("-----------------------------------------------------"),
+                         h4("Download TF-IDF"),
+                         verbatimTextOutput("tfidf_text"),
+                         downloadButton('download_tfidf', 'Download TF-IDF'),br(),
+                         
+                         
+                         h3("-----------------------------------------------------"),
                          h4("Download Bigram Corpus"),
+                         verbatimTextOutput("bi_text"),
                          downloadButton("download_bigram","Download Bigram Corpus"))
                           
           
