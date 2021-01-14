@@ -418,7 +418,20 @@ shinyServer(function(input, output,session) {
   )
   
   
-  bigram_data <- reactive({bigrammed_corpus = replace_bigram(dataset()$Document, min_freq = 2,stopw_list=unlist(strsplit(input$stopw,",")))})
+  bigram_data <- reactive({
+                bigrammed_corpus = replace_bigram(dataset(),
+                                                  min_freq = 2,
+                                                  stopw_list=unlist(strsplit(input$stopw,","))
+                                                  )
+                return(bigrammed_corpus[,2:3])
+                })
+  
+  
+  
+  
+  
+  
+  
   
   output$download_bigram <- output$downloadData1 <- downloadHandler(
     filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = "") },
