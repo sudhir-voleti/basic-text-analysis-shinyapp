@@ -418,6 +418,9 @@ collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, wor
 # 
 # 
 
+raw_corpus <- Document
+stopw_list <- c("will")
+
 ## == brew func to build bigrams.
 replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
@@ -428,15 +431,15 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
       # textdf = drop_stopwords_corpus(raw_corpus, custom.stopwords=c("and", "to")) 
       #corpus = str_replace_all(tolower(raw_corpus), c(" of ", " the ", " and "), " ") 
       
-      corpus = str_replace_all(tolower(raw_corpus), stopw_list, " ") 
-      textdf = data.frame(docID=seq(1:length(corpus)), text=corpus, stringsAsFactors=FALSE)
+      corpus = str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
+      textdf = data.frame(docID=seq(1:length(corpus)),nick=raw_corpus[,1], text=corpus, stringsAsFactors=FALSE)
     })   ) # 0.26 secs for speech
   
   # create sentence layer and unnesting bigrams
   a0 = textdf %>% 	
     unnest_tokens(sentence, text, token = "sentences") %>% 
     dplyr::mutate(sentID=row_number()) %>% 
-    dplyr::select(docID, sentID, sentence) %>%
+    dplyr::select(docID, sentID,nick, sentence) %>%
     
     # bigram-tokenize, count and filter by freq
     group_by(sentID) %>% unnest_tokens(ngram, sentence, token = "ngrams", n = 2) %>% ungroup() #%>%
@@ -478,26 +481,28 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   a3
   
   # rebuilding corpus, first at sentence layer
-  sent_corpus = data.frame(docID = numeric(), sentID = numeric(), 
+  sent_corpus = data.frame(docID = numeric(), sentID = numeric(), nick=character(),
                            sentence = character(), stringsAsFactors=FALSE)
   
   for (i1 in 1:max(a3$sentID)){
     a100 = a3[a3$sentID == i1,]   # for each sentence, collect all cleaned tokens
     sent_corpus[i1, 1] =  a100$docID[1]
     sent_corpus[i1, 2] =  a100$sentID[1]
-    sent_corpus[i1, 3] = paste0(str_c(a100$out_colm, collapse=" "), ".")   # using str_c()
+    sent_corpus[i1,3] = a100$nick[1]
+    sent_corpus[i1, 4] = paste0(str_c(a100$out_colm, collapse=" "), ".")   # using str_c()
   }   # i1 ends
   
   b0 = which(is.na(sent_corpus$docID))
   if (length(b0)>0) {sent_corpus = sent_corpus[-b0,]}
   
   # rebuilding corpus, now at doc layer
-  doc_corpus = data.frame(docID = numeric(), text = character(), stringsAsFactors=FALSE)
+  doc_corpus = data.frame(docID = numeric(),nick=character(), text = character(), stringsAsFactors=FALSE)
   
   for (i2 in 1:max(sent_corpus$docID)){
     a200 = sent_corpus[sent_corpus$docID == i2,] 	
     doc_corpus[i2, 1] = a200$docID[1]	
-    doc_corpus[i2, 2] = str_c(a200$sentence, collapse=" ")    }    # i2 ends
+    doc_corpus[i2,2] = a200$nick[1]
+    doc_corpus[i2, 3] = str_c(a200$sentence, collapse=" ")    }    # i2 ends
   
   return(doc_corpus) }    # replace_bigrams() func ends 
 # 
