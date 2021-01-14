@@ -418,8 +418,7 @@ collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, wor
 # 
 # 
 
-raw_corpus <- Document
-stopw_list <- c("will")
+
 
 ## == brew func to build bigrams.
 replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
