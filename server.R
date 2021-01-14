@@ -8,10 +8,31 @@ shinyServer(function(input, output,session) {
   dataset <- reactive({
     if (is.null(input$file)) {return(NULL)}
     else {
-      Document = readLines(input$file$datapath)
-      Doc.id=seq(1:length(Document))
-      calib=data.frame(Doc.id,Document)
-      return(calib)}
+      
+      if(file_ext(input$file$datapath)=="txt"){
+        Document = readLines(input$file$datapath)
+        #colnames(Document) <- c("Doc.id","Document")
+        Doc.id=seq(1:length(Document))
+        calib=data.frame(Doc.id,Document)
+        print(input$file$name)
+        return(calib)}
+    else{
+      Document = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
+      Document[,1] <- str_to_title(Document[,1])
+      Document[,1] <- make.names(Document[,1], unique=TRUE)
+      Document[,1] <- tolower(Document[,1])
+      Document[,1] <- str_replace_all(Document[,1],"\\.","_")
+      rownames(Document) <- Document[,1]
+      
+      colnames(Document) <- c("Doc.id","Document")
+      #Doc.id=seq(1:length(Document))
+      # calib=data.frame(Doc.id,Document)
+      print(input$file$name)
+      
+      return(Document)
+      }
+      
+    }
   })
   
   dtm_tcm =  reactive({
@@ -341,8 +362,41 @@ shinyServer(function(input, output,session) {
     
   })
   
+  
+  output$dtm_text <- renderText({
+    size = dim(ordered_dtm())
+    dtm_size = paste("DTM has  ", size[1],"(rows)"," X ", size[2],"(columns)","")
+    
+    
+  })
+  
+  
+  
+  output$tfidf_text <- renderText({
+    size = dim(ordered_dtm_idf())
+    dtm_size = paste("TF-IDF has  ", size[1],"(rows)"," X ", size[2],"(columns)","")
+    
+    
+  })
+  
+  
+  output$bi_text <- renderText({
+    size = dim(bigram_data())
+    dtm_size = paste("Bi-gram corpus has  ", size[1],"(rows)"," X ", size[2],"(columns)","")
+    
+    
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
   output$download_tfidf <- downloadHandler(
-    filename = function() {"tfidf.csv" },
+    filename = function() {paste(str_split(input$file$name,"\\.")[[1]][1],"_tfidf.csv",collapse = "") },
     content = function(file) {
       
       new_dtm <- ordered_dtm_idf()
@@ -353,7 +407,7 @@ shinyServer(function(input, output,session) {
   )
  
   output$download_dtm <- downloadHandler(
-    filename = function() {"dtm.csv" },
+    filename = function() {paste(str_split(input$file$name,"\\.")[[1]][1],"_dtm.csv",collapse = "") },
     content = function(file) {
       
       new_dtm <- ordered_dtm()
@@ -367,7 +421,7 @@ shinyServer(function(input, output,session) {
   bigram_data <- reactive({bigrammed_corpus = replace_bigram(dataset()$Document, min_freq = 2,stopw_list=unlist(strsplit(input$stopw,",")))})
   
   output$download_bigram <- output$downloadData1 <- downloadHandler(
-    filename = function() { "Bigram_Corpus.csv" },
+    filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = "") },
     content = function(file) {
       write.csv(bigram_data(), file,row.names=FALSE)
     }
