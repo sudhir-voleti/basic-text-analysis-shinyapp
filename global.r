@@ -435,8 +435,8 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   # create sentence layer and unnesting bigrams
   a0 = textdf %>% 	
     unnest_tokens(sentence, text, token = "sentences") %>% 
-    mutate(sentID=row_number()) %>% 
-    select(docID, sentID, sentence) %>%
+    dplyr::mutate(sentID=row_number()) %>% 
+    dplyr::select(docID, sentID, sentence) %>%
     
     # bigram-tokenize, count and filter by freq
     group_by(sentID) %>% unnest_tokens(ngram, sentence, token = "ngrams", n = 2) %>% ungroup() #%>%
