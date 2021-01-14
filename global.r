@@ -446,7 +446,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   # creating frequent bigrams for replacement
   a1 = a0 %>% 
     dplyr::count(ngram, sort=TRUE) %>% dplyr::filter(n >= min_freq) %>% 
-    dplyr::separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>% 
+    separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>% 
     
     # drop all stopwords in the bigrams of interest
     dplyr::filter(!word1 %in% stop_words$word) %>%
