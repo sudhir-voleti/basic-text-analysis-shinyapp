@@ -50,7 +50,7 @@ shinyUI(fluidPage(
   mainPanel( 
     tabsetPanel(type = "tabs",
                 #
-                tabPanel("Overview",h4(p("How to use this App")),
+                tabPanel("Overview & Example Dataset",h4(p("How to use this App")),
                          
                          p("To use this app you need a document corpus in txt file format. Make sure each document is separated from another document with a new line character.
                            To do basic Text Analysis in your text corpus, click on Browse in left-sidebar panel and upload the txt file. Once the file is uploaded it will do the computations in 
@@ -75,7 +75,7 @@ shinyUI(fluidPage(
                 #          img(src = "example1.png")),
                 tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
-                         h4("Sample DTM "),
+                         h4("Sample DTM (Document Term Matrix) "),
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("wordcloud",height = 700, width = 700),br(),
@@ -92,7 +92,7 @@ shinyUI(fluidPage(
                 
                 tabPanel("TF-IDF", 
                          verbatimTextOutput("idf_size"),
-                         h4("Sample TF-IDF "),
+                         h4("Sample TF-IDF (Term Frequency-Inverse Document Frequency) "),
                          DT::dataTableOutput("idf_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("idf_wordcloud",height = 700, width = 700),br(),
