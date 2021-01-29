@@ -20,13 +20,14 @@ library(tools)
 
 shinyUI(fluidPage(
   
-  titlePanel("Basic Text Analysis"),
+  titlePanel(title=div(img(src="logo.png",align='right'),"Basic Text Analysis")),
   
   # Input in sidepanel:
   sidebarPanel(
     
     fileInput("file", "Upload text file"),
-    
+    uiOutput('id_var'),
+    uiOutput("doc_var"),
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
     # selectInput("ws", "Weighing Scheme", 
@@ -39,10 +40,12 @@ shinyUI(fluidPage(
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
     
+    
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
     
-    submitButton(text = "Apply Changes", icon("refresh"))
+    
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh"))
     
   ),
   
@@ -50,7 +53,7 @@ shinyUI(fluidPage(
   mainPanel( 
     tabsetPanel(type = "tabs",
                 #
-                tabPanel("Overview",h4(p("How to use this App")),
+                tabPanel("Overview & Example Dataset",h4(p("How to use this App")),
                          
                          p("To use this app you need a document corpus in txt file format. Make sure each document is separated from another document with a new line character.
                            To do basic Text Analysis in your text corpus, click on Browse in left-sidebar panel and upload the txt file. Once the file is uploaded it will do the computations in 
@@ -75,7 +78,7 @@ shinyUI(fluidPage(
                 #          img(src = "example1.png")),
                 tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
-                         h4("Sample DTM "),
+                         h4("Sample DTM (Document Term Matrix) "),
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("wordcloud",height = 700, width = 700),br(),
@@ -92,7 +95,7 @@ shinyUI(fluidPage(
                 
                 tabPanel("TF-IDF", 
                          verbatimTextOutput("idf_size"),
-                         h4("Sample TF-IDF "),
+                         h4("Sample TF-IDF (Term Frequency-Inverse Document Frequency) "),
                          DT::dataTableOutput("idf_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("idf_wordcloud",height = 700, width = 700),br(),
