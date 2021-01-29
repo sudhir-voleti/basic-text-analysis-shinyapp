@@ -292,7 +292,7 @@ shinyServer(function(input, output,session) {
   
   
   output$dtmsize  <- renderPrint({
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       size = dim(t(dtm_tcm()$dtm))
       dtm_size = paste("Term Document Matrix (TDM) size is ", size[1]," X ", size[2],". Below are the first 10 docs X top 10 tokens")
@@ -302,7 +302,7 @@ shinyServer(function(input, output,session) {
   
   
   output$dtmsummary2  <- renderDataTable({
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       data.frame(score = idfwordcounts()[order(idfwordcounts(), decreasing = T)][1:input$max])
     }
@@ -311,7 +311,7 @@ shinyServer(function(input, output,session) {
   
   
   output$dtmsummary1  <- renderDataTable({
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       data.frame(Counts = wordcounts()[order(wordcounts(), decreasing = T)][1:input$max])
     }
@@ -321,7 +321,7 @@ shinyServer(function(input, output,session) {
   # This is your reactive element.
   df_reactive <- reactive({
     
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window)
       a0 %>%
@@ -351,7 +351,7 @@ shinyServer(function(input, output,session) {
   
   
   bi_gram <- reactive({
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       a1 = dataset()[,input$y] %>% split_by_puncts(puncts,.) #N-------------
       a2 = tibble(phrases = unlist(a1));
@@ -379,7 +379,7 @@ shinyServer(function(input, output,session) {
   
   output$bi_word_cloud <- renderPlot({
     
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       wordcloud(bi_gram()$bigram_united, bi_gram()$n,     # words, their freqs 
                 scale = c(4, 1),     # range of word sizes
@@ -461,7 +461,7 @@ shinyServer(function(input, output,session) {
   
   
   
-  output$download_bigram <- output$downloadData1 <- downloadHandler(
+  output$download_bigram <- downloadHandler(
     filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = " ") },
     content = function(file) {
       write.csv(bigram_data(), file,row.names=FALSE)
