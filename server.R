@@ -234,7 +234,7 @@ shinyServer(function(input, output,session) {
   
   output$cog.idf <- renderVisNetwork({
     
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       distill.cog.tcm(mat1=dtm_idf()$dtm, # input TCM MAT
                       mattype = "DTM",
@@ -250,7 +250,7 @@ shinyServer(function(input, output,session) {
   
   output$cog.dtm <- renderVisNetwork({
     
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
                       mattype = "DTM",
@@ -282,7 +282,7 @@ shinyServer(function(input, output,session) {
   # })
   
   output$idf_size  <- renderPrint({
-    if (is.null(input$file)) {return(NULL)}
+    if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       size = dim(t(dtm_idf()$dtm))
       dtm_size = paste("TF-IDF matrix size is ", size[1]," X ", size[2],". Below are the first 10 docs X top 10 tokens")
