@@ -22,12 +22,14 @@ shinyServer(function(input, output,session) {
       Document[,1] <- make.names(Document[,1], unique=TRUE)
       Document[,1] <- tolower(Document[,1])
       Document[,1] <- str_replace_all(Document[,1],"\\.","_")
+      Document<-Document[complete.cases(Document), ]
+      Document <- Document[!(duplicated(Document[,1])), ]
       rownames(Document) <- Document[,1]
       
-      colnames(Document) <- c("Doc.id","Document")
+     # colnames(Document) <- c("Doc.id","Document")
       #Doc.id=seq(1:length(Document))
       # calib=data.frame(Doc.id,Document)
-      print(input$file$name)
+      #print(input$file$name)
       
       return(Document)
       }
@@ -35,10 +37,32 @@ shinyServer(function(input, output,session) {
     }
   })
   
-  dtm_tcm =  reactive({
+  cols <- reactive({colnames(dataset())})
+  
+  y_col <- reactive({
+    x <- match(input$x,cols())
+    y_col <- cols()[-x]
+    return(y_col)
     
-    textb = dataset()$Document
-    ids = dataset()$Doc.id
+    })
+  
+  output$id_var <- renderUI({
+    print(cols())
+    selectInput("x","Select ID Column",choices = cols())
+  })
+  
+  
+  output$doc_var <- renderUI({
+    selectInput("y","Select Text Column",choices = y_col())
+  })
+  
+ 
+  
+  
+  dtm_tcm =  eventReactive(input$apply,{
+    
+    textb = dataset()[,input$y]
+    ids = dataset()[,input$x]
     
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
@@ -72,10 +96,10 @@ shinyServer(function(input, output,session) {
 
   
   
-  dtm_idf =  reactive({
+  dtm_idf =  eventReactive(input$apply,{
     
-    textb = dataset()$Document
-    ids = dataset()$Doc.id
+    textb = dataset()[,input$y]
+    ids = dataset()[,input$x]
     
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
@@ -299,7 +323,7 @@ shinyServer(function(input, output,session) {
     
     if (is.null(input$file)) {return(NULL)}
     else{
-      a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
+      a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window)
       a0 %>%
         # Filter if input is anywhere, even in other words.
         filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
@@ -329,7 +353,11 @@ shinyServer(function(input, output,session) {
   bi_gram <- reactive({
     if (is.null(input$file)) {return(NULL)}
     else{
-      a0 = bigram.collocation(dataset()$Document)
+      a1 = dataset()[,input$y] %>% split_by_puncts(puncts,.) #N-------------
+      a2 = tibble(phrases = unlist(a1));
+      a0 = bigram.collocation(a2)
+      
+    #  a0 = bigram.collocation(dataset()$Document)
       a0$coll.ratio <- round(a0$coll.ratio,2)
       a0 = a0[order(a0$n, decreasing = T),]
       if (nrow(a0) > 100){
@@ -434,7 +462,7 @@ shinyServer(function(input, output,session) {
   
   
   output$download_bigram <- output$downloadData1 <- downloadHandler(
-    filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = "") },
+    filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = " ") },
     content = function(file) {
       write.csv(bigram_data(), file,row.names=FALSE)
     }
