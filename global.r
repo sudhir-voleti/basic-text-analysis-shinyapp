@@ -1,4 +1,6 @@
 
+puncts = c(",", "\\.", "!", "\\?");
+
 text.clean = function(x)                    # text data
 { #require("tm")
   x  =  gsub("<.*?>", " ", x)               # regex for removing HTML tags
@@ -249,7 +251,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
   # create bigrams df
   bigram_df <- data_frame(text1) %>% 
     unnest_tokens(bigrams, text1, token = "ngrams", n = 2) %>%
-    dplyr::count(bigrams, sort = TRUE) %>%
+   dplyr:: count(bigrams, sort = TRUE) %>%
     ungroup() %>%
     
     # separate & filter bigrams for stopwords
@@ -281,6 +283,11 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
   return(new_df1)
 }   # func ends
 
+split_by_puncts <- function(puncts, test0){
+  for (i0 in 1:length(puncts)){test0 = str_replace_all(test0, puncts[i0], "@@")}; test0
+  a0 = tibble(phrases = str_split(test0, "@@"))
+  return(a0)
+} # util func ends
 
 concordance.r <- function(text1,  # corpus
                           word1,  # focal word for whcih context is sought
@@ -325,7 +332,7 @@ concordance.r <- function(text1,  # corpus
     
     
   } # i2 ends
-  list0[[2]]
+ # list0[[2]]
   
   # read list into dataframe for easier display of output  
   list_df = data.frame(NULL)
@@ -418,7 +425,8 @@ collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, wor
 # 
 # 
 
-
+#raw_corpus <- Document
+#stopw_list <- c("will","shall")
 
 ## == brew func to build bigrams.
 replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
@@ -432,6 +440,13 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
       
       corpus = str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
       textdf = data.frame(docID=seq(1:length(corpus)),nick=raw_corpus[,1], text=corpus, stringsAsFactors=FALSE)
+      a1 = textdf$text %>% split_by_puncts(puncts,.) #----New
+      temp <-lapply(a1$phrases, function(x) str_c(x,collapse = ","))
+      temp <- unlist(temp)
+      textdf$text <- temp
+      temp <- NULL
+      
+      
     })   ) # 0.26 secs for speech
   
   # create sentence layer and unnesting bigrams
@@ -466,7 +481,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
   
   a3 <- collect_terms(a2)
-  
+  #a3 <- a21
   # building bigram2
   # a3 = a2 %>% mutate(out_colm = bigram1) %>% 
   #   group_by(sentID) %>% 
