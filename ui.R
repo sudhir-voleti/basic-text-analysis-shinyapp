@@ -26,7 +26,8 @@ shinyUI(fluidPage(
   sidebarPanel(
     
     fileInput("file", "Upload text file"),
-    
+    uiOutput('id_var'),
+    uiOutput("doc_var"),
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
     # selectInput("ws", "Weighing Scheme", 
@@ -39,10 +40,12 @@ shinyUI(fluidPage(
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
     
+    
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
     
-    submitButton(text = "Apply Changes", icon("refresh"))
+    
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh"))
     
   ),
   
