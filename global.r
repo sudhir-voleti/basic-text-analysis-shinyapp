@@ -291,12 +291,15 @@ split_by_puncts <- function(puncts, test0){
 
 concordance.r <- function(text1,  # corpus
                           word1,  # focal word for whcih context is sought
-                          k){     # context window length in words on either side
+                          k,
+                          regx){     # context window length in words on either side
   
   require(magrittr)
   require(tidytext)
   require(dplyr)
   require(tidyr)
+  require(stringi)
+  
   
   text1 = gsub('<.*?>', "", text1)   # drop html junk
   
@@ -308,31 +311,39 @@ concordance.r <- function(text1,  # corpus
   
   text_df
   
-  # locate context words for each instance of the focal word
-  a0 = which(text_df$word == word1)
+  if(regx==TRUE){
+    a0 = which(stringr::str_detect(text_df$word,word1))
+  }else{
+    #a0 = which(stringr::str_detect(text_df$word,word1))
+    # a0 = grep(text_df$word,pattern = word1)
+    a0 = which(text_df$word == word1)
+  }
   a1 = matrix(0, nrow = length(a0), ncol = 3)
   colnames(a1) = c("start", "focal", "stop")
   for (i1 in 1:nrow(a1)){a1[i1, 1] = max(0, a0[i1]-k) 
   a1[i1, 2] = a0[i1]
   a1[i1, 3] = min(nrow(text_df), a0[i1]+k)  }
   head(a1)
-  
-  require(stringi)
-  # creat a list to store the contexts or concordances of word1  
   list0 = vector("list", length = length(a0))
-  for (i2 in 1:length(list0)){
-    list0[[i2]] = stri_join(text_df$word[a1[i2,1]:a1[i2, 3]], collapse=" ") 
-    #list0[[i2]] = gsub(word1, paste0('*', word1, '*', collapse=""), list0[[i2]])   # gsub(pattern, replacement, x)
-    list0[[i2]] = gsub(word1, paste(c("\\", word1, "\\"), collapse = ""), list0[[i2]])   # gsub(pattern, replacement, x)
-    
-    # paste(c("\\b(", input$word_select, ")\\b"), collapse = ""),
-    # "<span style='background-color:#6ECFEA;'>\\1</span>"
-    # 
-    # 
-    
-    
-  } # i2 ends
- # list0[[2]]
+  if(regx==TRUE){
+    for (i2 in 1:length(list0)){
+      vec2join <- text_df$word[a1[i2,1]:a1[i2, 3]]
+      vec2join <- append(vec2join,"<mark>",after = k)
+      vec2join <- append(vec2join,"</mark>",after=k+2)
+      list0[[i2]] = stri_join(vec2join, collapse=" ") 
+      #list0[[i2]] = gsub(word1, paste0('<mark>', word1, '</mark>', collapse=""), list0[[i2]])   # gsub(pattern, replacement, x)
+    } # i2 ends
+  }else{
+    for (i2 in 1:length(list0)){
+      list0[[i2]] = stri_join(text_df$word[a1[i2,1]:a1[i2, 3]], collapse=" ") 
+      list0[[i2]] = gsub(word1, paste0('<mark>', word1, '</mark>', collapse=""), list0[[i2]])   # gsub(pattern, replacement, x)
+    } # i2 ends
+    list0[[2]]
+  }
+  # creat a list to store the contexts or concordances of word1  
+  
+  
+  
   
   # read list into dataframe for easier display of output  
   list_df = data.frame(NULL)
