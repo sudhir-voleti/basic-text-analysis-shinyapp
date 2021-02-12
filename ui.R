@@ -42,6 +42,7 @@ shinyUI(fluidPage(
     
     
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
+    checkboxInput("regx","Check for regex match"),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
     
     
