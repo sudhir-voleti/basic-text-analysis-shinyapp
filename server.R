@@ -319,11 +319,11 @@ shinyServer(function(input, output,session) {
   
   
   # This is your reactive element.
-  df_reactive <- reactive({
+  df_reactive <- eventReactive(input$apply,{
     
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
-      a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window)
+      a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,input$regx)
       a0 %>%
         # Filter if input is anywhere, even in other words.
         filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
