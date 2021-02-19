@@ -32,7 +32,9 @@ shinyUI(fluidPage(
     
     # selectInput("ws", "Weighing Scheme", 
     #             c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
-    # 
+    #
+    htmlOutput("pre_proc1"),
+    htmlOutput("pre_proc2"),
     sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 0,  max = 100, value = 2),
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
@@ -42,6 +44,7 @@ shinyUI(fluidPage(
     
     
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
+    checkboxInput("regx","Check for regex match"),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
     
     
