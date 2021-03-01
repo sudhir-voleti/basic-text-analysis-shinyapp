@@ -19,7 +19,7 @@ library(stringr)
 library(tools)
 
 shinyUI(fluidPage(
-  
+  title = "Basic Text Analysis",
   titlePanel(title=div(img(src="logo.png",align='right'),"Basic Text Analysis")),
   
   # Input in sidepanel:
