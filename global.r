@@ -1,13 +1,20 @@
 
 puncts = c(",", "\\.", "!", "\\?");
 
-text.clean = function(x)                    # text data
+text.clean = function(x,html_tags,numbers)                    # text data
 { #require("tm")
-  x  =  gsub("<.*?>", " ", x)               # regex for removing HTML tags
+  x  =  tolower(x)
+  if(html_tags){
+    x  =  gsub("<.*?>", " ", x)             # regex for removing HTML tags
+  }
+  if(numbers){
+    x  =  removeNumbers(x) 
+  }# convert to lower case characters
   x  =  iconv(x, "latin1", "ASCII", sub="") # Keep only ASCII characters
   x  =  gsub("[^[:alnum:]]", " ", x)        # keep only alpha numeric
-  x  =  tolower(x)                          # convert to lower case characters
-  x  =  removeNumbers(x)                    # removing numbers
+   
+  
+                     # removing numbers
   x  =  stripWhitespace(x)                  # removing white space
   x  =  gsub("^\\s+|\\s+$", "", x)          # remove leading and trailing white space
   return(x)
@@ -136,7 +143,9 @@ dtm.tcm.creator <- function(text,id = "",
                             bigram.encoding = TRUE,
                             bigram.min.freq = 5,
                             min.dtm.freq = 2,
-                            skip.grams.window = 5) {
+                            skip.grams.window = 5,
+                            html_tags = TRUE,
+                            numbers = TRUE) {
   
   # if (class(text) != "character" | length(text) < 3){
   #   stop("data format Not correct. Make sure it's a character verctor of length above 3")
@@ -152,7 +161,7 @@ dtm.tcm.creator <- function(text,id = "",
   
   if (std.clean == TRUE) {
     # print("Performing Standard Text Cleaning")
-    text = text.clean(text)
+    text = text.clean(text,html_tags,numbers)
   }
   
   if (std.stop.words == TRUE){
