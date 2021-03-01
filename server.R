@@ -39,6 +39,24 @@ shinyServer(function(input, output,session) {
   
   cols <- reactive({colnames(dataset())})
   
+  output$pre_proc1 <- renderUI({if(is.null(dataset())){
+    return(NULL)
+  }else{
+    
+    checkboxInput('html',"Remove HTML tags",value = TRUE)
+                        
+      }
+  })
+  
+  output$pre_proc2 <- renderUI({if(is.null(dataset())){
+    return(NULL)
+  }else{
+    checkboxInput('num',"Remove Numbers",value = TRUE)
+    
+  }
+  })
+  
+  
   y_col <- reactive({
     x <- match(input$x,cols())
     y_col <- cols()[-x]
@@ -72,7 +90,9 @@ shinyServer(function(input, output,session) {
                               bigram.encoding = TRUE,
                               # bigram.min.freq = 20,
                               min.dtm.freq = input$freq,
-                              skip.grams.window = 10)
+                              skip.grams.window = 10,
+                              html_tags=input$html,
+                              numbers = input$num)
     #if (input$ws == "weightTf") {
       dtm = as.matrix(dtm.tcm$dtm)  
       dtm
@@ -324,18 +344,19 @@ shinyServer(function(input, output,session) {
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,input$regx)
-      a0 %>%
-        # Filter if input is anywhere, even in other words.
-        filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
-        # Replace complete words with same in HTML.
-        mutate_all(~ gsub(
-          paste(c("\\b(", input$concord.word, ")\\b"), collapse = ""),
-          "<span style='background-color:#6ECFEA;'>\\1</span>",
-          .,
-          TRUE,
-          TRUE
-        )
-        )
+      a0
+      # a0 %>%
+      #   # Filter if input is anywhere, even in other words.
+      #   filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
+      #   # Replace complete words with same in HTML.
+      #   mutate_all(~ gsub(
+      #     paste(c("\\b(", input$concord.word, ")\\b"), collapse = ""),
+      #     "<span style='background-color:#6ECFEA;'>\\1</span>",
+      #     .,
+      #     TRUE,
+      #     TRUE
+      #   )
+      #   )
     }
     
   })
