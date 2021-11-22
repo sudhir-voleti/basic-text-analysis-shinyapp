@@ -20,7 +20,6 @@ library(tokenizers)
 library(wordcloud)
 library(slam)
 library(visNetwork)
-# Update test 123
 
 library(stringi)
 library(magrittr)
@@ -31,3 +30,4 @@ library(igraph)
 
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
 if (!require(stringr)) {install.packages("stringr")};  library(stringr)
+if (!require(DT)){install.packages('DT')}; library('DT')
