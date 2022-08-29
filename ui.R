@@ -71,14 +71,25 @@ shinyUI(fluidPage(
                          br(),
                          h4(p("Download Sample text file")),
                          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
+                         downloadButton('downloadData2', 'Download OnePlus reviews txt file'),br(),br(),
+                         downloadButton('downloadData3', 'Download Uber reviews csv file'),br(),br(),
+                         downloadButton('downloadData4', 'Download Game of Thrones reviews txt file'),br(),br(),
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                          img(src = "example1.png")
                 )
                 ,
-                # tabPanel("Example dataset", h4(p("Download Sample text file")),
-                #          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
-                #          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
-                #          img(src = "example1.png")),
+                tabPanel("Data Summary",
+                         h4("Uploaded data size"),
+                         verbatimTextOutput("up_size"),
+                          h4("Sentence level summary"),
+                             htmlOutput("text"),
+                             hr(),
+                             h4("Token level summary"),
+                             htmlOutput("text2"),
+                             hr(),
+                         h4("Sample of uploaded datasest"),
+                         DT::dataTableOutput("samp_data")
+                         ),                
                 tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
                          h4("Sample DTM (Document Term Matrix) "),
@@ -88,13 +99,7 @@ shinyUI(fluidPage(
                          #textInput("in",label = "text"),
                          h4("Weights Distribution of Wordcloud"),
                          DT::dataTableOutput("dtmsummary1")),
-                # tabPanel("TDM & Word Cloud",
-                #          
-                #          verbatimTextOutput("dtmsummary"),
-                #          br(),
-                #          br(),
-                #          
-                #         ),
+         
                 
                 tabPanel("TF-IDF", 
                          verbatimTextOutput("idf_size"),
@@ -105,6 +110,7 @@ shinyUI(fluidPage(
                          #textInput("in",label = "text"),
                          h4("Weights Distribution of Wordcloud"),
                          DT::dataTableOutput("dtmsummary2")),
+                
                 tabPanel("Term Co-occurrence",
                          h4("DTM Co-occurrence"),
                          visNetworkOutput("cog.dtm",height = 700, width = 700),
@@ -129,6 +135,7 @@ shinyUI(fluidPage(
                          p('Concordance allows you to see the local context around a word of interest. It does so by building a moving window of words before and after the focal word\'s every instance in the corpus. Below is the list of all instances of concordance in the corpus for your word of interest entered in the left side bar panel of this app. You can change the concordance window or word of interest in the left side bar panel.',align = "Justify"),
                          #verbatimTextOutput("concordance"))
                          DT::dataTableOutput("concordance")),
+                
                 tabPanel("Downloads",
                          h4("Download DTM"),
                          #h3("-------------"),
@@ -139,13 +146,8 @@ shinyUI(fluidPage(
                          h3("-----------------------------------------------------"),
                          h4("Download TF-IDF"),
                          verbatimTextOutput("tfidf_text"),
-                         downloadButton('download_tfidf', 'Download TF-IDF'),br(),
+                         downloadButton('download_tfidf', 'Download TF-IDF'),br()
                          
-                         
-                         h3("-----------------------------------------------------"),
-                         h4("Download Bigram Corpus"),
-                         verbatimTextOutput("bi_text"),
-                         downloadButton("download_bigram","Download Bigram Corpus"))
                           
           
                 
