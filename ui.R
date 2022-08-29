@@ -127,7 +127,7 @@ shinyUI(fluidPage(
                                     this App',align = "Justify"),
                          DT::dataTableOutput("bi.grams"),
                          h4("Bigram wordcloud"),
-                         plotOutput("bi_word_cloud",height=700,width=700),
+                         plotOutput("bi_word_cloud",height=700,width=700)
                          
                 ),
                 tabPanel("Concordance",
@@ -147,7 +147,7 @@ shinyUI(fluidPage(
                          h4("Download TF-IDF"),
                          verbatimTextOutput("tfidf_text"),
                          downloadButton('download_tfidf', 'Download TF-IDF'),br()
-                         
+                         )
                           
           
                 
