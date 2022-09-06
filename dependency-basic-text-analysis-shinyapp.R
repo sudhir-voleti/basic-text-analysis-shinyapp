@@ -1,3 +1,4 @@
+
 try(require(shiny) || install.packages("shiny"))
 try(require(text2vec) || install.packages("text2vec"))
 try(require(tm) || install.packages("tm"))
@@ -31,3 +32,4 @@ library(igraph)
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
 if (!require(stringr)) {install.packages("stringr")};  library(stringr)
 if (!require(DT)){install.packages('DT')}; library('DT')
+
