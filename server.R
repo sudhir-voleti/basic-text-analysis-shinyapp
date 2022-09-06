@@ -75,7 +75,33 @@ shinyServer(function(input, output,session) {
   })
   
  
+ output$up_size <- renderPrint({
+    size <- dim(dataset())
+    paste0("Dimensions of uploaded data: ",size[1]," (rows) X ", size[2]," (Columns)")
+  })
   
+  text_summ <- reactive({summary(quanteda::corpus(dataset()[,input$y]))})
+  quant_mod <- reactive({quanteda::corpus(dataset()[,input$y])})
+    
+    output$text <- renderUI({
+        req(input$file$datapath)
+        str1 <- paste("Total no of documets:", nrow(dataset()))
+        str2 <- paste("Range of sentences per document: ",min(text_summ()$Sentences),"-",max(text_summ()$Sentences))
+        #str3 <- paste("Maximum number of sentence: ",)
+        str4 <- paste("Average number of sentences per document: ",round(mean(text_summ()$Sentences),2))
+        HTML(paste(str1, str2,str4, sep = '<br/>'))
+    })
+
+    output$text2 <- renderUI({
+        req(input$file$datapath)
+        str2 <- paste("Range of words per document: ",min(text_summ()$Tokens),'-',max(text_summ()$Tokens))
+        #str3 <- paste("range of words per document:: ",max(text_summ()$Tokens))
+        str4 <- paste("Average number of words: ",round(mean(text_summ()$Tokens),2))
+        HTML(paste(str2,str4, sep = '<br/>'))
+    })
+  output$samp_data <- DT::renderDataTable({
+    DT::datatable(head(dataset()),rownames = FALSE)
+  })
   
   dtm_tcm =  eventReactive(input$apply,{
     
@@ -498,5 +524,26 @@ shinyServer(function(input, output,session) {
       writeLines(readLines("data/Nokia_Lumia_reviews.txt"), file)
     }
   )
+  
+  output$downloadData2 <- downloadHandler(
+    filename = function() { "OnePlus_reviews.txt" },
+    content = function(file) {
+      writeLines(readLines("data/onePlus8T_reviews.txt.txt"), file)
+    }
+  )
+  
+ output$downloadData3 <- downloadHandler(
+  filename = function() { "uber_reviews_itune.csv" },
+  content = function(file) {
+    write.csv(read.csv("data/uber_reviews_itune.csv"), file, row.names=F, col.names=F, fileEncoding = "UTF-8")
+  }
+)  
+  
+  output$downloadData4 <- downloadHandler(
+    filename = function() { "GameOfThrones_reviews.txt" },
+    content = function(file) {
+      writeLines(readLines("data/Game of Thrones IMDB reviews.txt"), file)
+    }
+  )  
   
 })
