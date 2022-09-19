@@ -32,4 +32,4 @@ library(igraph)
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
 if (!require(stringr)) {install.packages("stringr")};  library(stringr)
 if (!require(DT)){install.packages('DT')}; library('DT')
-
+if (!require(quanteda)){install.packages('quanteda')}; library('quanteda')
