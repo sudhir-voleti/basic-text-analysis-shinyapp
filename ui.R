@@ -92,7 +92,7 @@ shinyUI(fluidPage(
                          ),                
                 tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
-                         h4("Sample DTM (Document Term Matrix) "),
+                         h4("Sample DTM (Document Token Matrix) "),
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("wordcloud",height = 700, width = 700),br(),
