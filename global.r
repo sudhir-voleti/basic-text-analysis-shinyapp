@@ -129,8 +129,8 @@ distill.cog.tcm = function(mat1, # input TCM or DTM MAT
   
   
   graph = simplify(graph) 
-  V(graph)$color[1:s] = "green"
-  V(graph)$color[(s+1):length(V(graph))] = "pink"
+  #V(graph)$color[1:s] = "green"
+  #V(graph)$color[(s+1):length(V(graph))] = "pink"
   
   graph = delete.vertices(graph, V(graph)[ degree(graph) == 0 ]) # delete singletons?
   E(graph)$width <- E(graph)$weight/min(E(graph)$weight)  
