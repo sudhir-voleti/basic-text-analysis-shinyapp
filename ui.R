@@ -41,6 +41,9 @@ shinyUI(fluidPage(
     
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
+
+    textInput("wordl_t1", ("Enter keywords for Custom Co-Occurrence Graph:"), value = "amazing, good, nokia, screen"),
+
     
     
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
@@ -110,6 +113,12 @@ shinyUI(fluidPage(
                          visNetworkOutput("cog.dtm",height = 700, width = 700),
                          h4("TF-IDF Co-occurrence"),
                          visNetworkOutput("cog.idf",height = 700, width = 700)
+                ),
+                tabPanel("Custom Co-occurence",
+                         h4("Custom Co-occurrence"),
+                         visNetworkOutput("custom_cog", height = 700, width = 700)
+
+                  
                 ),
                 tabPanel("Bigram",
                          h4('Collocations Bigrams'),
