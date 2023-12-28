@@ -73,7 +73,6 @@ shinyServer(function(input, output,session) {
   output$doc_var <- renderUI({
     selectInput("y","Select Text Column",choices = y_col())
   })
-  
  
  output$up_size <- renderPrint({
     size <- dim(dataset())
@@ -231,8 +230,38 @@ shinyServer(function(input, output,session) {
     # diag(mat2) =  0
     
   })
-  
-  
+
+  word1 <- reactive({
+    if (is.null(input$wordl_t1)) {return(NULL)}
+    else{
+      return(unlist(strsplit(input$wordl_t1, ",")))
+    }
+  })
+
+  build_dtm01 <- function(corpus0){
+    
+    tidy_df = dplyr::tibble(text = corpus0) |>  
+      
+      dplyr::mutate(doc_id = row_number()) |> # Add doc_id first
+      dplyr::rename(text = text) |> 
+      
+      dplyr::select(doc_id, text) |> # Reorder columns
+      
+      unnest_tokens(word, text) |>
+      dplyr::anti_join(stop_words) |>
+      dplyr::group_by(doc_id) |>
+      dplyr::count(word, sort=TRUE) |>
+      dplyr::rename(value = n)
+    
+    
+    dtm = tidy_df %>% 
+      cast_sparse(doc_id, word, value)
+    
+    return(dtm) 
+  }
+
+  corpus_dtm <- reactive({build_dtm01(dataset()[,input$y])})
+  output$custom_cog <- renderVisNetwork(Build_custom_cog(corpus_dtm(), title = "COGs", word1()))
   
   idfwordcounts = reactive({
     

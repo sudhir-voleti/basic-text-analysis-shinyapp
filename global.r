@@ -1,3 +1,7 @@
+require(igraph)
+require(qgraph)
+library(visNetwork)
+
 
 puncts = c(",", "\\.", "!", "\\?");
 
@@ -129,8 +133,8 @@ distill.cog.tcm = function(mat1, # input TCM or DTM MAT
   
   
   graph = simplify(graph) 
-  V(graph)$color[1:s] = "green"
-  V(graph)$color[(s+1):length(V(graph))] = "pink"
+  #V(graph)$color[1:s] = "green"
+  #V(graph)$color[(s+1):length(V(graph))] = "pink"
   
   graph = delete.vertices(graph, V(graph)[ degree(graph) == 0 ]) # delete singletons?
   E(graph)$width <- E(graph)$weight/min(E(graph)$weight)  
@@ -362,6 +366,90 @@ concordance.r <- function(text1,  # corpus
   return(list_df) } # func ends
 
 
+edgelist_unitfunc <- function(colm0, max.connexns=5){
+    
+    from_name0 = colnames(colm0)
+    
+    a10_sort = sort(unlist(colm0), decreasing=TRUE, index.return=TRUE)
+    a10_sort_inds = a10_sort$ix[1:max.connexns]
+    colm1 = as.data.frame(colm0[a10_sort_inds, 1])
+    
+    colnames(colm1) = from_name0
+    rownames(colm1) = rownames(colm0)[a10_sort_inds]; head(colm1)
+    to_names0 = rownames(colm1)
+    edge_wt0 = unlist(colm1) |> as.numeric()
+    
+    edgelist0 = data.frame(from = from_name0, to = to_names0, weight = edge_wt0)
+    return(edgelist0)   } # func ends
+  
+  ## wrapper func for above 
+  build_edgelist_df <- function(mat1, max.connexns){
+    
+    edgelist1 = data.frame(from = character(), to = character(), weight = numeric())
+    
+    for (i1 in 1:ncol(mat1)){
+      
+      colm0 = data.frame("test"= mat1[,i1]) # say
+      token0 = colnames(mat1)[i1]; #token0
+      colnames(colm0) = token0; #head(colm0)
+      
+      edgelist0 = edgelist_unitfunc(colm0, max.connexns)
+      edgelist1 = bind_rows(edgelist1, edgelist0) } # i1 loop ends
+    
+    return(edgelist1) } # func ends
+  
+  ## Now for the main func
+  
+  Build_custom_cog = function(dtm, # input dtm
+                              title="COG", # title for the graph
+                              keywords,    # no. of central nodes
+                              max.connexns = 15){  # max no. of connections  
+    
+    "# ===  first convert dtm to an adjacency matrix ==="
+    dtm1 = as.matrix(dtm)   # need regular matrix for %*% to apply
+    adj.mat = t(dtm1) %*% dtm1    # make square symmatric term-term mat 
+    diag(adj.mat) = 0     # no self-references. So diag is 0.
+    
+    a0 = order(apply(adj.mat, 2, sum), decreasing = T)   # order cols by descending colSum
+    mat0 = adj.mat[a0, a0]  # step needed? will see.
+    keywords = stringr::str_trim(tolower(keywords))
+    
+    "# === select keyword cols === "
+    keywords0 = NULL
+    for (word00 in keywords){
+      if (word00 %in% colnames(mat0)) {keywords0 = c(keywords0, word00)} } # for loop ends 
+    
+    a1 = NULL
+    for (word01 in keywords0){ 
+      a2 = which(colnames(mat0) == word01); a1 = c(a1, a2)}
+    
+    mat1 = mat0[,a1]; #dim(mat1)
+    
+    ## make adj_mat from edgelist and solve
+    edgelist1 = build_edgelist_df(mat1, max.connexns)
+    uniq_toks = unique(c(edgelist1$to, edgelist1$from))
+    ind_mat = data.frame(token0 = uniq_toks, tok_inds = seq(1:length(uniq_toks))); glimpse(ind_mat)
+    edgelist2 = inner_join(edgelist1, ind_mat, join_by(from == token0)) %>%
+      rename(from_inds = tok_inds); #glimpse(edgelist2)
+    
+    edgelist2 = inner_join(edgelist2, ind_mat, join_by(to == token0)) %>%
+      rename(to_inds = tok_inds); #glimpse(edgelist2)
+    
+    #edgelist3 = edgelist2[(!duplicated(edgelist2$to)),]; #glimpse(edgelist3)
+    edgelist3 = as.matrix(edgelist2[,1:2])
+    gr = graph_from_edgelist(edgelist3)
+    
+    gr = igraph::simplify(gr) 
+    verts_list = get.vertex.attribute(gr)$name
+    a12 = which(verts_list %in% keywords0); a12
+    V(gr)$color = 'pink'
+    V(gr)$color[a12] = 'green'
+    
+    gr.visn <- toVisNetworkData(gr)
+    gr.visn$edges$value <- gr.visn$edges$weight
+    vis.gr = visNetwork(gr.visn$nodes, gr.visn$edges)
+    return(vis.gr) }
+  
 
 
 ## define func to stopword-remove from raw_corpus
