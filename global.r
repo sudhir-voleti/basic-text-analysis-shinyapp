@@ -7,6 +7,7 @@ puncts = c(",", "\\.", "!", "\\?");
 
 text.clean = function(x,html_tags,numbers)                    # text data
 { #require("tm")
+  x  =  iconv(x, "latin1", "ASCII", sub="") # Keep only ASCII characters
   x  =  tolower(x)
   if(html_tags){
     x  =  gsub("<.*?>", " ", x)             # regex for removing HTML tags
@@ -14,7 +15,7 @@ text.clean = function(x,html_tags,numbers)                    # text data
   if(numbers){
     x  =  removeNumbers(x) 
   }# convert to lower case characters
-  x  =  iconv(x, "latin1", "ASCII", sub="") # Keep only ASCII characters
+  
   x  =  gsub("[^[:alnum:]]", " ", x)        # keep only alpha numeric
    
   
