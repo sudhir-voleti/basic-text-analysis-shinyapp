@@ -544,7 +544,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
       
       corpus = str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
       textdf = data.frame(docID=seq(1:length(corpus)),nick=raw_corpus[,1], text=corpus, stringsAsFactors=FALSE)
-      a1 = textdf$text |> split_by_puncts(puncts,.) #----New
+      a1 = split_by_puncts(puncts,textdf$text) #----New
       temp <-lapply(a1$phrases, function(x) str_c(x,collapse = ","))
       temp <- unlist(temp)
       textdf$text <- temp
