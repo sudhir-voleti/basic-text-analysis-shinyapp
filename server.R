@@ -253,9 +253,10 @@ shinyServer(function(input, output,session) {
     return(dtm) 
   }
 
-  corpus_dtm <- reactive({build_dtm01(dataset()[,input$y])})
-  output$custom_cog <- renderVisNetwork(Build_custom_cog(corpus_dtm(), title = "custom COG", word1()))
-  
+  #corpus_dtm <- reactive({build_dtm01(dataset()[,input$y])})
+  #output$custom_cog <- renderVisNetwork(Build_custom_cog(corpus_dtm(), title = "custom COG", word1()))
+  output$custom_cog <- renderVisNetwork(Build_custom_cog(dtm_tcm()$dtm, title = "custom COG", word1()))
+    
   idfwordcounts = reactive({ return(dtm.word.count(dtm_idf()$dtm))   }) 
   wordcounts = reactive({ return(dtm.word.count(dtm_tcm()$dtm))  })   
   
