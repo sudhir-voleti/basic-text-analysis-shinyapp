@@ -430,10 +430,10 @@ edgelist_unitfunc <- function(colm0, max.connexns=5){
     edgelist1 = build_edgelist_df(mat1, max.connexns)
     uniq_toks = unique(c(edgelist1$to, edgelist1$from))
     ind_mat = data.frame(token0 = uniq_toks, tok_inds = seq(1:length(uniq_toks))); glimpse(ind_mat)
-    edgelist2 = inner_join(edgelist1, ind_mat, join_by(from == token0)) |>
+    edgelist2 = dplyr::inner_join(edgelist1, ind_mat, join_by(from == token0)) |>
       rename(from_inds = tok_inds); glimpse(edgelist2)
     
-    edgelist2 = inner_join(edgelist2, ind_mat, join_by(to == token0)) |>
+    edgelist2 = dplyr::inner_join(edgelist2, ind_mat, join_by(to == token0)) |>
       rename(to_inds = tok_inds); glimpse(edgelist2)
     
     #edgelist3 = edgelist2[(!duplicated(edgelist2$to)),]; #glimpse(edgelist3)
