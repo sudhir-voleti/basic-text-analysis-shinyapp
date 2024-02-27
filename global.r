@@ -355,10 +355,7 @@ concordance.r <- function(text1,  # corpus
     list0[[2]]
   }
   # creat a list to store the contexts or concordances of word1  
-  
-  
-  
-  
+    
   # read list into dataframe for easier display of output  
   list_df = data.frame(NULL)
   for (i2 in 1:length(a0)){list_df[i2,1] = list0[[i2]]}
@@ -366,7 +363,7 @@ concordance.r <- function(text1,  # corpus
   
   return(list_df) } # func ends
 
-
+### ---- custom cog starts here --------------------
 edgelist_unitfunc <- function(colm0, max.connexns=5){
     
     from_name0 = colnames(colm0)
