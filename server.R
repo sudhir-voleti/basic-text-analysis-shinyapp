@@ -238,74 +238,44 @@ shinyServer(function(input, output,session) {
     }
   })
 
-  build_dtm01 <- function(corpus0){
-    
+  build_dtm01 <- function(corpus0){    
     tidy_df = dplyr::tibble(text = corpus0) |>  
-      
       dplyr::mutate(doc_id = row_number()) |> # Add doc_id first
-      dplyr::rename(text = text) |> 
-      
-      dplyr::select(doc_id, text) |> # Reorder columns
-      
+      dplyr::rename(text = text) |>       
+      dplyr::select(doc_id, text) |> # Reorder columns      
       unnest_tokens(word, text) |>
       dplyr::anti_join(stop_words) |>
       dplyr::group_by(doc_id) |>
       dplyr::count(word, sort=TRUE) |>
       dplyr::rename(value = n)
     
-    
-    dtm = tidy_df %>% 
-      cast_sparse(doc_id, word, value)
-    
+    dtm = tidy_df |> cast_sparse(doc_id, word, value)  
     return(dtm) 
   }
 
   corpus_dtm <- reactive({build_dtm01(dataset()[,input$y])})
   output$custom_cog <- renderVisNetwork(Build_custom_cog(corpus_dtm(), title = "custom COG", word1()))
   
-  idfwordcounts = reactive({
-    
-    return(dtm.word.count(dtm_idf()$dtm))
-    
-  }) 
+  idfwordcounts = reactive({ return(dtm.word.count(dtm_idf()$dtm))   }) 
+  wordcounts = reactive({ return(dtm.word.count(dtm_tcm()$dtm))  })   
   
-  
-  wordcounts = reactive({
-    
-    return(dtm.word.count(dtm_tcm()$dtm))
-    
-  }) 
-  
-  
-  
-  output$idf_wordcloud <- renderPlot({
-    
+  output$idf_wordcloud <- renderPlot({  
     if (is.null(input$file)) {return(NULL)}
     else{
       tsum = idfwordcounts()
       tsum = tsum[order(tsum, decreasing = T)]
       dtm.word.cloud(count = tsum,max.words = input$max,title = 'TF-IDF Wordcloud')
     }
-    
-    
   })
   
-  
-  
-  output$wordcloud <- renderPlot({
-    
+  output$wordcloud <- renderPlot({    
     if (is.null(input$file)) {return(NULL)}
     else{
       tsum = wordcounts()
       tsum = tsum[order(tsum, decreasing = T)]
       dtm.word.cloud(count = tsum,max.words = input$max,title = 'Term Frequency Wordcloud')
     }
-    
-    
   })
-  
-  
-  
   
   output$cog.idf <- renderVisNetwork({
     
@@ -400,9 +370,9 @@ shinyServer(function(input, output,session) {
     else{
       a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,input$regx)
       a0
-      # a0 %>%
+      # a0 |>
       #   # Filter if input is anywhere, even in other words.
-      #   filter_all(any_vars(grepl(input$concord.word, ., T, T))) %>% 
+      #   filter_all(any_vars(grepl(input$concord.word, ., T, T))) |> 
       #   # Replace complete words with same in HTML.
       #   mutate_all(~ gsub(
       #     paste(c("\\b(", input$concord.word, ")\\b"), collapse = ""),
@@ -429,7 +399,7 @@ shinyServer(function(input, output,session) {
   bi_gram <- reactive({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
-      a1 = dataset()[,input$y] %>% split_by_puncts(puncts,.) #N-------------
+      a1 = dataset()[,input$y] |> split_by_puncts(puncts,.) #N-------------
       a2 = tibble(phrases = unlist(a1));
       a0 = bigram.collocation(a2)
       
