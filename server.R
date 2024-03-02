@@ -400,7 +400,8 @@ shinyServer(function(input, output,session) {
   bi_gram <- reactive({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
-      a1 = dataset()[,input$y] |> split_by_puncts(puncts,.) #N-------------
+      #a1 = dataset()[,input$y] %>% split_by_puncts(puncts,.) #N-------------
+      a1 = split_by_puncts(puncts, dataset()[,input$y]) 
       a2 = tibble(phrases = unlist(a1));
       a0 = bigram.collocation(a2)
       
