@@ -415,8 +415,7 @@ shinyServer(function(input, output,session) {
       }
       a1
     }
-    
-    
+    return(a1)
   })
   
   
