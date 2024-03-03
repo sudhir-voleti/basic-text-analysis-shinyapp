@@ -196,8 +196,9 @@ dtm.tcm.creator <- function(text,id = "",
 
 bigram.collocation <- function(text1){   # text1 from readLines() is input
   text1 = gsub('<.*?>', "", text1)   # drop html junk
+  text1 = tibble(text = text1)
   # create words df
-    text_df = unnest_tokens(word, text1) |>
+    text_df = text1 |> unnest_tokens(word, text) |>
     anti_join(stop_words) |> 
    dplyr::count(word, sort = TRUE) #|> 
   
