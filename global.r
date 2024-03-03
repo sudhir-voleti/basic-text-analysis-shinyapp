@@ -203,8 +203,8 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
    dplyr::count(word, sort = TRUE) #|> 
   
   # create bigrams df
-  bigram_df <- data_frame(text1) |> 
-    unnest_tokens(bigrams, text1, token = "ngrams", n = 2) |>
+  bigram_df <- tibble(text1) |> 
+    unnest_tokens(bigrams, text, token = "ngrams", n = 2) |>
    dplyr:: count(bigrams, sort = TRUE) |>
     ungroup() |>
     
