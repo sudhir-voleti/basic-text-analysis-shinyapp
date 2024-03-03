@@ -234,7 +234,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
   return(new_df1)
 }   # func ends
 
-split_by_puncts <- function(puncts, test0){
+split_by_puncts <- function(test0, puncts){
   for (i0 in 1:length(puncts)){test0 = str_replace_all(test0, puncts[i0], "@@")}; test0
   a0 = tibble(phrases = str_split(test0, "@@"))
   return(a0)
