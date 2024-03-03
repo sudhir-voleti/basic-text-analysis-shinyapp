@@ -25,12 +25,6 @@ shinyServer(function(input, output,session) {
       Document<-Document[complete.cases(Document), ]
       Document <- Document[!(duplicated(Document[,1])), ]
       rownames(Document) <- Document[,1]
-      
-     # colnames(Document) <- c("Doc.id","Document")
-      #Doc.id=seq(1:length(Document))
-      # calib=data.frame(Doc.id,Document)
-      #print(input$file$name)
-      
       return(Document)
       }
       
@@ -38,13 +32,10 @@ shinyServer(function(input, output,session) {
   })
   
   cols <- reactive({colnames(dataset())})
-  
   output$pre_proc1 <- renderUI({if(is.null(dataset())){
     return(NULL)
   }else{
-    
     checkboxInput('html',"Remove HTML tags",value = TRUE)
-                        
       }
   })
   
@@ -52,23 +43,19 @@ shinyServer(function(input, output,session) {
     return(NULL)
   }else{
     checkboxInput('num',"Remove Numbers",value = TRUE)
-    
   }
   })
-  
   
   y_col <- reactive({
     x <- match(input$x,cols())
     y_col <- cols()[-x]
     return(y_col)
-    
     })
   
   output$id_var <- renderUI({
     print(cols())
     selectInput("x","Select ID Column",choices = cols())
   })
-  
   
   output$doc_var <- renderUI({
     selectInput("y","Select Text Column",choices = y_col())
@@ -103,10 +90,8 @@ shinyServer(function(input, output,session) {
   })
   
   dtm_tcm =  eventReactive(input$apply,{
-    
     textb = dataset()[,input$y]
     ids = dataset()[,input$x]
-    
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
                               std.clean = TRUE,
@@ -118,34 +103,15 @@ shinyServer(function(input, output,session) {
                               skip.grams.window = 10,
                               html_tags=input$html,
                               numbers = input$num)
-    #if (input$ws == "weightTf") {
       dtm = as.matrix(dtm.tcm$dtm)  
       dtm
       dtm_tcm_obj = list(dtm = dtm)#, tcm = tcm)
       dtm_tcm_obj
-  #  } 
-    
-    # if (input$ws == "weightTfIdf"){
-    #   model_tfidf = TfIdf$new()
-    #   dtm = round(as.matrix(model_tfidf$fit_transform(dtm.tcm$dtm)),2)
-    #   
-    #   tempd = dtm*0
-    #   tempd[dtm > 0] = 1
-    #   dtm = dtm + tempd
-    # }  
-    # 
-    # # tcm = dtm.tcm$tcm
-    # dtm_tcm_obj = list(dtm = dtm)#, tcm = tcm)
   })
   
-
-  
-  
-  dtm_idf =  eventReactive(input$apply,{
-    
+dtm_idf =  eventReactive(input$apply,{
     textb = dataset()[,input$y]
     ids = dataset()[,input$x]
-    
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
                               std.clean = TRUE,
@@ -155,27 +121,17 @@ shinyServer(function(input, output,session) {
                               # bigram.min.freq = 20,
                               min.dtm.freq = input$freq,
                               skip.grams.window = 10)
-    # if (input$ws == "weightTf") {
-    #   dtm = as.matrix(dtm.tcm$dtm)  
-    # } 
-    
-   # if (input$ws == "weightTfIdf"){
+
       model_tfidf = TfIdf$new()
       dtm = round(as.matrix(model_tfidf$fit_transform(dtm.tcm$dtm)),2)
       
       tempd = dtm*0
       tempd[dtm > 0] = 1
       dtm = dtm + tempd
-   # }  
-    
-    # tcm = dtm.tcm$tcm
     dtm_tcm_obj = list(dtm = dtm)#, tcm = tcm)
     dtm_tcm_obj
   })
-  
-  
-  
-  
+
   ordered_dtm_idf<- reactive({if (is.null(input$file)) {return(NULL)}
     else{
       mat1= dtm_idf()$dtm
@@ -188,47 +144,27 @@ shinyServer(function(input, output,session) {
     
   })
   
-  
-  
   ordered_dtm <- reactive({if (is.null(input$file)) {return(NULL)}
     else{
       mat1= dtm_tcm()$dtm
       a = colSums(mat1)
       b = order(-a)     # nice syntax for ordering vector in decr order  
       mat2 = mat1[,b]
-      return(mat2)
-      
-    }
-    
+      return(mat2)     }    
   })
   
   
   output$idf_table <- renderDataTable({
-    
     temp <- ordered_dtm_idf()[1:10,1:10]
     #  temp <- tem[1:10,1:10]
     return(temp)
-    
-    # a = colSums(mat1)  # collect colsums into a vector obj a
-    
-    # 
-    # diag(mat2) =  0
-    
   })
   
-  
-  
   output$dtm_table <- renderDataTable({
-    
     temp <- ordered_dtm()[1:10,1:10]
     #  temp <- tem[1:10,1:10]
     return(temp)
-    
-    # a = colSums(mat1)  # collect colsums into a vector obj a
-    
-    # 
-    # diag(mat2) =  0
-    
+
   })
 
   word1 <- reactive({
@@ -238,20 +174,18 @@ shinyServer(function(input, output,session) {
     }
   })
 
-  build_dtm01 <- function(corpus0){    
-    tidy_df = dplyr::tibble(text = corpus0) |>  
-      dplyr::mutate(doc_id = row_number()) |> # Add doc_id first
-      dplyr::rename(text = text) |>       
-      dplyr::select(doc_id, text) |> # Reorder columns      
-      unnest_tokens(word, text) |>
-      dplyr::anti_join(stop_words) |>
-      dplyr::group_by(doc_id) |>
-      dplyr::count(word, sort=TRUE) |>
-      dplyr::rename(value = n)
-    
-    dtm = tidy_df |> cast_sparse(doc_id, word, value)  
-    return(dtm) 
-  }
+#  build_dtm01 <- function(corpus0){    
+#    tidy_df = dplyr::tibble(text = corpus0) |>  
+#      dplyr::mutate(doc_id = row_number()) |> # Add doc_id first
+#      dplyr::rename(text = text) |>       
+#      dplyr::select(doc_id, text) |> # Reorder columns      
+#      unnest_tokens(word, text) |>
+#      dplyr::anti_join(stop_words) |>
+#      dplyr::group_by(doc_id) |>
+#      dplyr::count(word, sort=TRUE) |>
+#      dplyr::rename(value = n)
+    #dtm = tidy_df |> cast_sparse(doc_id, word, value)  
+    #return(dtm) }
 
   #corpus_dtm <- reactive({build_dtm01(dataset()[,input$y])})
   #output$custom_cog <- renderVisNetwork(Build_custom_cog(corpus_dtm(), title = "custom COG", word1()))
@@ -279,7 +213,6 @@ shinyServer(function(input, output,session) {
   })
   
   output$cog.idf <- renderVisNetwork({
-    
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       distill.cog.tcm(mat1=dtm_idf()$dtm, # input TCM MAT
@@ -288,14 +221,9 @@ shinyServer(function(input, output,session) {
                       s=input$nodes,    # no. of central nodes
                       k1 = input$connection)  # No. of Connection with central Nodes
     }
-    
-    
   })
   
-  
-  
   output$cog.dtm <- renderVisNetwork({
-    
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
@@ -304,29 +232,8 @@ shinyServer(function(input, output,session) {
                       s=input$nodes,    # no. of central nodes
                       k1 = input$connection)  # No. of Connection with central Nodes
     }
-    
-    
   })
-  
-  # output$cog.tcm <- renderPlot({
-  #   
-  # distill.cog.tcm(mat1=dtm_tcm()$tcm, # input TCM MAT,
-  #                   mattype = "TCM",
-  #                   title = "TCM from glove algorithm - Graph ", # title for the graph
-  #                   s=input$nodes,    # no. of central nodes
-  #                   k1 = input$connection)  # No. of Connection with central Nodes
-  #   
-  #       })
-  
-  
-  # output$dtmsummary  <- renderPrint({
-  #   if (is.null(input$file)) {return(NULL)}
-  #   else {
-  #     sortedobj = dtm_tcm()$dtm[,order(wordcounts(), decreasing = T)]
-  #     (t(sortedobj[1:10,1:10]))
-  #   }
-  # })
-  
+
   output$idf_size  <- renderPrint({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
@@ -335,8 +242,7 @@ shinyServer(function(input, output,session) {
       return(dtm_size)
     }
   })
-  
-  
+
   output$dtmsize  <- renderPrint({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
@@ -346,15 +252,12 @@ shinyServer(function(input, output,session) {
     }
   })
   
-  
   output$dtmsummary2  <- renderDataTable({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       data.frame(score = idfwordcounts()[order(idfwordcounts(), decreasing = T)][1:input$max])
     }
   })
-  
-  
   
   output$dtmsummary1  <- renderDataTable({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
@@ -370,32 +273,12 @@ shinyServer(function(input, output,session) {
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,input$regx)
-      a0
-      # a0 |>
-      #   # Filter if input is anywhere, even in other words.
-      #   filter_all(any_vars(grepl(input$concord.word, ., T, T))) |> 
-      #   # Replace complete words with same in HTML.
-      #   mutate_all(~ gsub(
-      #     paste(c("\\b(", input$concord.word, ")\\b"), collapse = ""),
-      #     "<span style='background-color:#6ECFEA;'>\\1</span>",
-      #     .,
-      #     TRUE,
-      #     TRUE
-      #   )
-      #   )
-    }
-    
+      a0  }    
   })
-  
   
   output$concordance = renderDataTable({
-    
-    # a0 = concordance.r(dataset()$Document,input$concord.word, input$window)
-    # concordance = a0
-    # datatable(concordance, escape = F, options = list(dom = "lt"))
     datatable(df_reactive(), escape = F, options = list(dom = "lt"))
   })
-  
   
   bi_gram <- reactive({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
@@ -403,9 +286,8 @@ shinyServer(function(input, output,session) {
       #a1 = dataset()[,input$y] %>% split_by_puncts(puncts,.) #N-------------
       a1 = split_by_puncts(puncts, dataset()[,input$y]) 
       a2 = tibble(phrases = unlist(a1));
-      a0 = bigram.collocation(a2)
-      
-    #  a0 = bigram.collocation(dataset()$Document)
+      a0 = bigram.collocation(a2)      
+      #a0 = bigram.collocation(dataset()$Document)
       a0$coll.ratio <- round(a0$coll.ratio,2)
       a0 = a0[order(a0$n, decreasing = T),]
       if (nrow(a0) > 100){
@@ -418,14 +300,8 @@ shinyServer(function(input, output,session) {
     return(a1)
   })
   
-  
-  output$bi.grams = renderDataTable({
-    bi_gram()
-    
-  })
-  
+  output$bi.grams = renderDataTable({ bi_gram()  })
   output$bi_word_cloud <- renderPlot({
-    
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else{
       wordcloud(bi_gram()$bigram_united, bi_gram()$n,     # words, their freqs 
@@ -434,26 +310,17 @@ shinyServer(function(input, output,session) {
                 max.words = input$max,       # max #words
                 colors = brewer.pal(8, "Dark2"))
     }
-    
   })
-  
   
   output$dtm_text <- renderText({
     size = dim(ordered_dtm())
     dtm_size = paste("DTM has  ", size[1],"(rows)"," X ", size[2],"(columns)","")
-    
-    
   })
-  
-  
   
   output$tfidf_text <- renderText({
     size = dim(ordered_dtm_idf())
     dtm_size = paste("TF-IDF has  ", size[1],"(rows)"," X ", size[2],"(columns)","")
-    
-    
   })
-  
   
   output$bi_text <- renderText({
     size = dim(bigram_data())
@@ -462,33 +329,20 @@ shinyServer(function(input, output,session) {
     
   })
   
-  
-  
-  
-  
-  
-  
-  
-  
   output$download_tfidf <- downloadHandler(
     filename = function() {paste(str_split(input$file$name,"\\.")[[1]][1],"_tfidf.csv",collapse = "") },
     content = function(file) {
       
       new_dtm <- ordered_dtm_idf()
       write.csv(new_dtm, file, row.names=T)
-      
-      
     }
   )
  
   output$download_dtm <- downloadHandler(
     filename = function() {paste(str_split(input$file$name,"\\.")[[1]][1],"_dtm.csv",collapse = "") },
     content = function(file) {
-      
       new_dtm <- ordered_dtm()
       write.csv(new_dtm, file, row.names=T)
-      
-      
     }
   )
   
@@ -500,23 +354,13 @@ shinyServer(function(input, output,session) {
                                                   )
                 return(bigrammed_corpus[,2:3])
                 })
-  
-  
-  
-  
-  
-  
-  
-  
+
   output$download_bigram <- downloadHandler(
     filename = function() { paste(str_split(input$file$name,"\\.")[[1]][1],"_bigram_corpus.csv",collapse = " ") },
     content = function(file) {
       write.csv(bigram_data(), file,row.names=FALSE)
     }
   )
-  
-  
-  
   
   output$downloadData1 <- downloadHandler(
     filename = function() { "Nokia_Lumia_reviews.txt" },
