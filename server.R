@@ -408,5 +408,11 @@ dtm_idf =  eventReactive(input$apply,{
       writeLines(readLines("data/Game of Thrones IMDB reviews.txt"), file)
     }
   )  
+output$downloadData5 <- downloadHandler(
+    filename = function() { "Amazon-Q4_2023_Transcript.pdf" },
+    content = function(file) {
+      writeLines(readLines("data/Amazon-Q4_2023_Transcript.pdf"), file)
+    }
+  )  
   
 })
