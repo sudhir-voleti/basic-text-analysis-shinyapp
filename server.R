@@ -105,7 +105,7 @@ shinyServer(function(input, output,session) {
         HTML(paste(str2,str4, sep = '<br/>'))
     })
   output$samp_data <- DT::renderDataTable({
-    DT::datatable(head(dataset()),rownames = FALSE)
+    DT::datatable(dataset(),rownames = FALSE)
   })
   
   dtm_tcm =  eventReactive(input$apply,{
