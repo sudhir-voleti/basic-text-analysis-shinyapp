@@ -95,18 +95,17 @@ shinyUI(fluidPage(
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("wordcloud",height = 700, width = 700),br(),
-                         # textInput("in",label = "text"),
                          h4("Suggested LLM Prompt for Wordcloud [Uber Example]"),
-                         # DT::dataTableOutput("dtmsummary1")
-                         h5("Note: Edit the bold sections in text below as per input data"),
-                         
-                        p("Context: This image shows the **150 token** wordcloud from **400+ reviews on itunes of Uber services in the US.**", align = "justify"),
+                         #h5("Note: Edit the bold sections in text below as per input data"),
+                         uiOutput(" prompt1"), 
+                        
+                       # p("Context: This image shows the **150 token** wordcloud from **400+ reviews on itunes of Uber services in the US.**", align = "justify"),
 
-                        p("Task: Analyze the wordcloud. Based on frequently occurring tokens, speculate about what **people are saying the reviews?**", align = "justify"),
+                       # p("Task: Analyze the wordcloud. Based on frequently occurring tokens, speculate about what **people are saying the reviews?**", align = "justify"),
 
-                        p("Format: Make reasonable assumptions. Make a table showing the top few themes that seem to emerge. Table columns should be:", align = "justify"),
+                       # p("Format: Make reasonable assumptions. Make a table showing the top few themes that seem to emerge. Table columns should be:", align = "justify"),
 
-                        p("[1] Main Token or group of tokens, [2] Possible theme, [3] Reasoning", align = "justify"),
+                       # p("[1] Main Token or group of tokens, [2] Possible theme, [3] Reasoning", align = "justify"),
                         ),
          
                 
