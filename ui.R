@@ -110,12 +110,13 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of Wordcloud"),
                          DT::dataTableOutput("dtmsummary2")),
                 
-                tabPanel("Term Co-occurrence",
-                         h4("DTM Co-occurrence"),
-                         visNetworkOutput("cog.dtm",height = 700, width = 700),
-                         h4("TF-IDF Co-occurrence"),
-                         visNetworkOutput("cog.idf",height = 700, width = 700)
-                ),
+#                tabPanel("Term Co-occurrence",
+#                         h4("DTM Co-occurrence"),
+#                         visNetworkOutput("cog.dtm",height = 700, width = 700),
+#                         h4("TF-IDF Co-occurrence"),
+#                         visNetworkOutput("cog.idf",height = 700, width = 700)
+#                ),
+                
                 tabPanel("Custom Co-occurence",
                          h4("Custom Co-occurrence"),
                          visNetworkOutput("custom_cog", height = 700, width = 700)
