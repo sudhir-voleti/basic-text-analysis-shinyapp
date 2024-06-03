@@ -97,7 +97,7 @@ shinyUI(fluidPage(
                          plotOutput("wordcloud",height = 700, width = 700),br(),
                          h4("Suggested LLM Prompt for Wordcloud [Uber Example]"),
                          #h5("Note: Edit the bold sections in text below as per input data"),
-                         uiOutput(" prompt1"), 
+                         uiOutput("prompt1"), 
                         
                        # p("Context: This image shows the **150 token** wordcloud from **400+ reviews on itunes of Uber services in the US.**", align = "justify"),
 
