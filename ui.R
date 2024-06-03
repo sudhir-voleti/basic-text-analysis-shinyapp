@@ -42,13 +42,10 @@ shinyUI(fluidPage(
 
     textInput("wordl_t1", ("Enter keywords for Custom Co-Occurrence Graph:"), value = "amazing, good, nokia, screen"),
 
-    
-    
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
     checkboxInput("regx","Check for regex match"),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
-    
-    
+  
     actionButton(inputId = "apply",label = "Apply Changes", icon("refresh"))
     
   ),
