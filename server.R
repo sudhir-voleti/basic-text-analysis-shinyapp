@@ -286,7 +286,7 @@ output$prompt1 <- renderUI({
 
   [1] Main Token or group of tokens,<br> 
   [2] Possible theme, <br>
-  [3] Reasoning" }),
+  [3] Reasoning" })
   
   output$idf_size  <- renderPrint({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
