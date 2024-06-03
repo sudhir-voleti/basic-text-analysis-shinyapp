@@ -254,27 +254,27 @@ dtm_idf =  eventReactive(input$apply,{
     }
   })
   
-  output$cog.idf <- renderVisNetwork({
-    if (is.null(input$file)|input$apply==0) {return(NULL)}
-    else{
-      distill.cog.tcm(mat1=dtm_idf()$dtm, # input TCM MAT
-                      mattype = "DTM",
-                      title = "COG from TF-IDF Adjacency", # title for the graph
-                      s=input$nodes,    # no. of central nodes
-                      k1 = input$connection)  # No. of Connection with central Nodes
-    }
-  })
+#  output$cog.idf <- renderVisNetwork({
+#    if (is.null(input$file)|input$apply==0) {return(NULL)}
+#    else{
+#      distill.cog.tcm(mat1=dtm_idf()$dtm, # input TCM MAT
+#                      mattype = "DTM",
+#                      title = "COG from TF-IDF Adjacency", # title for the graph
+#                      s=input$nodes,    # no. of central nodes
+#                      k1 = input$connection)  # No. of Connection with central Nodes
+#    }
+#  })
   
-  output$cog.dtm <- renderVisNetwork({
-    if (is.null(input$file)|input$apply==0) {return(NULL)}
-    else{
-      distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
-                      mattype = "DTM",
-                      title = "COG from DTM Adjacency", # title for the graph
-                      s=input$nodes,    # no. of central nodes
-                      k1 = input$connection)  # No. of Connection with central Nodes
-    }
-  })
+#  output$cog.dtm <- renderVisNetwork({
+#    if (is.null(input$file)|input$apply==0) {return(NULL)}
+#    else{
+#      distill.cog.tcm(mat1=dtm_tcm()$dtm, # input TCM MAT
+#                      mattype = "DTM",
+#                      title = "COG from DTM Adjacency", # title for the graph
+#                      s=input$nodes,    # no. of central nodes
+#                      k1 = input$connection)  # No. of Connection with central Nodes
+#    }
+#  })
 
   output$idf_size  <- renderPrint({
     if (is.null(input$file)|input$apply==0) {return(NULL)}
