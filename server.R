@@ -278,9 +278,9 @@ dtm_idf =  eventReactive(input$apply,{
 
 output$prompt1 <- renderUI({ 
   
-   HTML("CONTEXT: This image shows the <b>150 token<\b> wordcloud from <b>400+ reviews on itunes of Uber services in the US.<\b><br><br>
+   HTML("CONTEXT: This image shows the <b>150 token</b> wordcloud from <b>400+ reviews on itunes of Uber services in the US.</b><br><br>
 
-  TASK: Analyze the wordcloud. Based on frequently occurring tokens, speculate about what <b>people are saying the reviews?<\b><br><br>
+  TASK: Analyze the wordcloud. Based on frequently occurring tokens, speculate about what <b>people are saying the reviews?</b><br><br>
 
   FORMAT: Make reasonable assumptions. Make a table showing the top few themes that seem to emerge. Table columns should be:<br><br>
 
