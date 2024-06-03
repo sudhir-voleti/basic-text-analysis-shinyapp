@@ -95,9 +95,21 @@ shinyUI(fluidPage(
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),
                          plotOutput("wordcloud",height = 700, width = 700),br(),
-                         #textInput("in",label = "text"),
-                         h4("Weights Distribution of Wordcloud"),
-                         DT::dataTableOutput("dtmsummary1")),
+                         # textInput("in",label = "text"),
+                         h4("Suggested LLM Prompt for Wordcloud [Uber Example]"),
+                         # DT::dataTableOutput("dtmsummary1")
+                         h3("Note: Edit the bold sections in text below as per input data"),
+                         
+                        p("Context: This image shows the <b>150 token</b> wordcloud from <b>400+ reviews on itunes of Uber services in the US.</b><br><br>
+
+                        Task: Analyze the wordcloud. Based on frequently occurring tokens, speculate about what <b>people are saying the reviews?</b><br><br>
+
+                        Format: Make reasonable assumptions. Make a table showing the top few themes that seem to emerge. Table columns should be:<br><br>
+
+                        [1] Main Token or group of tokens <br>
+                        [2] Possible theme <br>
+                        [3] Reasoning", align = "justify"),
+                        ),
          
                 
                 tabPanel("TF-IDF", 
