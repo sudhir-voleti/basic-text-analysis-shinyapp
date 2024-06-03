@@ -37,8 +37,8 @@ shinyUI(fluidPage(
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
     
-    numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
-    numericInput("connection", "Number of Max Connection with Central Node", 5),
+ #   numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
+ #   numericInput("connection", "Number of Max Connection with Central Node", 5),
 
     textInput("wordl_t1", ("Enter keywords for Custom Co-Occurrence Graph:"), value = "amazing, good, nokia, screen"),
 
