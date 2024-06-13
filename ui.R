@@ -71,11 +71,13 @@ shinyUI(fluidPage(
                          #, height = 280, width = 400
                          br(),
                          h4(p("Download Sample text file")),
-                         downloadButton('downloadData1', 'Download Nokia Lumia reviews TXT file'),br(),br(),
-                         downloadButton('downloadData2', 'Download OnePlus reviews TXT file'),br(),br(),
+                         #downloadButton('downloadData1', 'Download Nokia Lumia reviews TXT file'),br(),br(),
+                         #downloadButton('downloadData2', 'Download OnePlus reviews TXT file'),br(),br(),
                          downloadButton('downloadData3', 'Download Uber reviews CSV file'),br(),br(),
                          downloadButton('downloadData4', 'Download Game of Thrones reviews TXT file'),br(),br(),
                          downloadButton('downloadData5', 'Download Amazon Q4-2023 earnings transcript PDF file'),br(),br(),
+                         downloadButton('downloadData1', 'Download Academic paper on GenAI in the classroom PDF file'),br(),br(),
+                         downloadButton('downloadData2', 'Download Academic paper on Indian Patents Act 1970 PDF file'),br(),br(),
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                          img(src = "example1.png")
                 )
