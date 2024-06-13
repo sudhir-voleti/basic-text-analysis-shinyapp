@@ -404,12 +404,12 @@ dtm_idf =  eventReactive(input$apply,{
     }
   )
   
-  output$downloadData1 <- downloadHandler(
-    filename = function() { "Gen Ai in the mktg classroom CNS 2024.pdf" },
-    content = function(file) {
-      writeLines(readLines("data/Gen Ai in the mktg classroom CNS 2024.pdf"), file)
-    }
-  )
+ # output$downloadData1 <- downloadHandler(
+ #   filename = function() { "Gen Ai in the mktg classroom CNS 2024.pdf" },
+ #   content = function(file) {
+ #     writeLines(readLines("data/Gen Ai in the mktg classroom CNS 2024.pdf"), file)
+ #   }
+ # )
   
 #  output$downloadData2 <- downloadHandler(
 #    filename = function() { "Indian_patent-act-1970.pdf" },
