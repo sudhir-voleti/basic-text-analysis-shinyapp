@@ -411,12 +411,12 @@ dtm_idf =  eventReactive(input$apply,{
     }
   )
   
-  output$downloadData2 <- downloadHandler(
-    filename = function() { "Indian_patent-act-1970.pdf" },
-    content = function(file) {
-      writeLines(readLines("data/Indian_patent-act-1970.pdf"), file)
-    }
-  )
+#  output$downloadData2 <- downloadHandler(
+#    filename = function() { "Indian_patent-act-1970.pdf" },
+#    content = function(file) {
+#      writeLines(readLines("data/Indian_patent-act-1970.pdf"), file)
+#    }
+#  )
   
  output$downloadData3 <- downloadHandler(
   filename = function() { "uber_reviews_itune.csv" },
