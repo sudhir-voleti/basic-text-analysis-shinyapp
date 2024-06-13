@@ -77,7 +77,8 @@ shinyUI(fluidPage(
                          downloadButton('downloadData4', 'Download Game of Thrones reviews TXT file'),br(),br(),
                          downloadButton('downloadData5', 'Download Amazon Q4-2023 earnings transcript PDF file'),br(),br(),
                          downloadButton('downloadData1', 'Download Academic paper on GenAI in the classroom PDF file'),br(),br(),
-                         #downloadButton('downloadData2', 'Download Academic paper on Indian Patents Act 1970 PDF file'),br(),br(),
+                         #downloadButton('downloadData2', 'Download Indian Patents Act 1970 PDF file'),br(),br(),
+                         a("click here to download Indian Patents Act 1970 PDF file", href = "https://ipindia.gov.in/writereaddata/Portal/IPOAct/1_31_1_patent-act-1970-11march2015.pdf")
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                          img(src = "example1.png")
                 )
