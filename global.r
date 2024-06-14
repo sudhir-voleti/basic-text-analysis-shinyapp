@@ -109,8 +109,8 @@ distill.cog.tcm = function(mat1, # input TCM or DTM MAT
   
   
   graph = simplify(graph) 
-  #V(graph)$color[1:s] = "green"
-  #V(graph)$color[(s+1):length(V(graph))] = "pink"
+  V(graph)$color[1:s] = "green"
+  V(graph)$color[(s+1):length(V(graph))] = "pink"
   
   graph = delete.vertices(graph, V(graph)[ degree(graph) == 0 ]) # delete singletons?
   E(graph)$width <- E(graph)$weight/min(E(graph)$weight)  
@@ -245,15 +245,12 @@ concordance.r <- function(text1,  # corpus
                           k,
                           regx){     # context window length in words on either side
   
-  require(magrittr)
   require(tidytext)
   require(dplyr)
   require(tidyr)
   require(stringi)
   
-  
-  text1 = gsub('<.*?>', "", text1)   # drop html junk
-  
+  text1 = gsub('<.*?>', "", text1)   # drop html junk  
   text_df <- data_frame(text1) |> 
     unnest_tokens(word, text1) |> 
     
@@ -291,8 +288,8 @@ concordance.r <- function(text1,  # corpus
     } # i2 ends
     list0[[2]]
   }
-  # creat a list to store the contexts or concordances of word1  
-    
+  
+  # creat a list to store the contexts or concordances of word1    
   # read list into dataframe for easier display of output  
   list_df = data.frame(NULL)
   for (i2 in 1:length(a0)){list_df[i2,1] = list0[[i2]]}
@@ -333,8 +330,7 @@ edgelist_unitfunc <- function(colm0, max.connexns=5){
     
     return(edgelist1) } # func ends
   
-  ## Now for the main func
-  
+  ## Now for the main func  
   Build_custom_cog = function(dtm, # input dtm
                               title="custom COG", # title for the graph
                               keywords,    # no. of central nodes
@@ -389,10 +385,6 @@ edgelist_unitfunc <- function(colm0, max.connexns=5){
 ## define func to stopword-remove from raw_corpus
 drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.stopwords=FALSE){
   
-  library(tidyverse)
-  library(tidytext)
-  library(stringr)
-  
   # setup stop.words df first
   stop.words = data.frame(word = unique(c(custom.stopwords, c("the", "a", "an", "of"))), stringsAsFactors=FALSE)
   if (use.tidy.stopwords == "TRUE") {
@@ -436,13 +428,6 @@ drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.st
   
   return(doc_corpus) }    # drop_stopwords_corpus() func ends 
 
-# # testing above func
-# speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
-# system.time({  new_corpus = drop_stopwords_corpus(speech, use.tidy.stopwords=TRUE)  })    # 0.26 secs
-# 
-# 
-# a21 <- a2
-
 ## == define collect_terms() routine for calling inside replace_bigrams()
 collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, word2, bigram1, out_colm}
   
@@ -461,12 +446,7 @@ collect_terms <- function(a21){  # sentence has colms {docID, sentID, word1, wor
   return(a21)  }
 
 # a21 = a2[a2$sentID == 2,] |> mutate(out_colm = bigram1); a21; collect_terms(a21)
-
-
 # raw_corpus <- speech
-# 
-# 
-
 #raw_corpus <- Document
 #stopw_list <- c("will","shall")
 
@@ -561,16 +541,6 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
     doc_corpus[i2, 3] = str_c(a200$sentence, collapse=" ")    }    # i2 ends
   
   return(doc_corpus) }    # replace_bigrams() func ends 
-# 
-# # testing on speech
-#speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
-
-
-# stopw_list <- c("dear","countrymen")
-# system.time({ bigrammed_corpus = replace_bigram(speech, min_freq = 2,stopw_list = stopw_list) }) # 0.66 secs
-# bigrammed_corpus[1:3,]
-# 
-
 
 
 
