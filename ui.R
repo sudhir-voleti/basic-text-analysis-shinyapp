@@ -37,8 +37,8 @@ shinyUI(fluidPage(
     
     sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
     
-    numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
-    numericInput("connection", "Number of Max Connection with Central Node", 5),
+    #numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
+    #numericInput("connection", "Number of Max Connection with Central Node", 5),
 
     textInput("wordl_t1", ("Enter keywords for Custom Co-Occurrence Graph:"), value = "amazing, good, nokia, screen"),
 
@@ -82,8 +82,8 @@ shinyUI(fluidPage(
                          a("Click here to download Indian Patents Act 1970 PDF file", href = "https://ipindia.gov.in/writereaddata/Portal/IPOAct/1_31_1_patent-act-1970-11march2015.pdf"),br(),br(),
                          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                          img(src = "example1.png")
-                )
-                ,
+                ),
+                
                 tabPanel("Data Summary",
                          h4("Uploaded data size"),
                          verbatimTextOutput("up_size"),
@@ -96,6 +96,7 @@ shinyUI(fluidPage(
                          h4("Sample of uploaded datasest"),
                          DT::dataTableOutput("samp_data")
                          ),                
+                
                 tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
                          h4("Sample DTM (Document Token Matrix) "),
@@ -104,8 +105,7 @@ shinyUI(fluidPage(
                          plotOutput("wordcloud",height = 700, width = 700),br(),
                          #textInput("in",label = "text"),
                          h4("Weights Distribution of Wordcloud"),
-                         DT::dataTableOutput("dtmsummary1")),
-         
+                         DT::dataTableOutput("dtmsummary1")),         
                 
                 tabPanel("TF-IDF", 
                          verbatimTextOutput("idf_size"),
@@ -117,18 +117,18 @@ shinyUI(fluidPage(
                          h4("Weights Distribution of Wordcloud"),
                          DT::dataTableOutput("dtmsummary2")),
                 
-                tabPanel("Term Co-occurrence",
-                         h4("DTM Co-occurrence"),
-                         visNetworkOutput("cog.dtm",height = 700, width = 700),
-                         h4("TF-IDF Co-occurrence"),
-                         visNetworkOutput("cog.idf",height = 700, width = 700)
-                ),
+            #    tabPanel("Term Co-occurrence",
+            #             h4("DTM Co-occurrence"),
+            #             visNetworkOutput("cog.dtm",height = 700, width = 700),
+            #             h4("TF-IDF Co-occurrence"),
+            #             visNetworkOutput("cog.idf",height = 700, width = 700)
+            #    ),
+                
                 tabPanel("Custom Co-occurence",
                          h4("Custom Co-occurrence"),
                          visNetworkOutput("custom_cog", height = 700, width = 700)
-
-                  
                 ),
+                
                 tabPanel("Bigram",
                          h4('Collocations Bigrams'),
                          p('If a corpus has n word tokens, then it can have at most (n-1) bigrams. However, most of
