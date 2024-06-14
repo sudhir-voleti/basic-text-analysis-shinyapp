@@ -2,15 +2,12 @@
 #               Basic Text Analysis             #
 #################################################
 library(shiny)
-library(text2vec)
 library(tm)
 library(tokenizers)
 library(wordcloud)
 library(slam)
 library(visNetwork)
 
-library(stringi)
-library(magrittr)
 library(tidytext)
 library(dplyr)
 library(tidyr)
@@ -21,7 +18,7 @@ library(pdftools)
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
 if (!require(stringr)) {install.packages("stringr")};  library(stringr)
 if (!require(DT)){install.packages('DT')}; library('DT')
-if (!require(quanteda)){install.packages('quanteda')}; library('quanteda')
+if (!require(quanteda)){install.packages('quanteda', type="source")}; library('quanteda')
 
 options(shiny.maxRequestSize = 50*1024^2) 
 
