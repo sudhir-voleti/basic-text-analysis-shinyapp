@@ -49,10 +49,11 @@ shinyServer(function(input, output,session) {
         # Combine text from all pages while preserving line breaks
         pdf_text1 <- paste(pdf_text1, collapse = "\n\n")
         pdf_text2 <- str_split(pdf_text1, pattern = "\n\n")
-
+        a0_logi = (!duplicated(pdf_text2))
+        pdf_text3 = pdf_text2[a0_logi]
         #Document = pdf_text2
-          Doc.id <- seq(1, length(pdf_text2[[1]]))
-          calib <- data.frame(Doc.id, pdf_text2)
+          Doc.id <- seq(1, length(pdf_text3[[1]]))
+          calib <- data.frame(Doc.id, pdf_text3)
           colnames(calib) <- c("Doc.id","Documents")
 
     # +++ Remove numeric characters from the 'Documents' column and deduplicate
