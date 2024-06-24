@@ -56,10 +56,10 @@ shinyServer(function(input, output,session) {
           colnames(calib) <- c("Doc.id","Documents")
 
     # +++ Remove numeric characters from the 'Documents' column and deduplicate
-    pdf_text2 <- gsub("\\d+", "", calib$Documents)     # remove numeric characters
-    a0_logi = (!duplicated(pdf_text2))                   # identify unique documents
-    pdf_text3 <- pdf_text2[a0_logi]                      # subset to unique documents
-    calib <- data.frame(Doc.id=seq(1,length(pdf_text3)), text = pdf_text3)  # update calib with Doc.ids and unique texts        
+#    pdf_text2 <- gsub("\\d+", "", calib$Documents)     # remove numeric characters
+#    a0_logi = (!duplicated(pdf_text2))                   # identify unique documents
+#    pdf_text3 <- pdf_text2[a0_logi]                      # subset to unique documents
+#    calib <- data.frame(Doc.id=seq(1,length(pdf_text3)), text = pdf_text3)  # update calib with Doc.ids and unique texts        
     # +++ edit ends here.
         
           print(input$file$name)
