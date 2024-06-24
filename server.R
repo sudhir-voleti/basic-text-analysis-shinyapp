@@ -49,10 +49,19 @@ shinyServer(function(input, output,session) {
         # Combine text from all pages while preserving line breaks
         pdf_text1 <- paste(pdf_text1, collapse = "\n\n")
         pdf_text2 <- str_split(pdf_text1, pattern = "\n\n")
+
         #Document = pdf_text2
           Doc.id <- seq(1, length(pdf_text2[[1]]))
           calib <- data.frame(Doc.id, pdf_text2)
           colnames(calib) <- c("Doc.id","Documents")
+
+    # +++ Remove numeric characters from the 'Documents' column and deduplicate
+    pdf_text2 <- gsub("\\d+", "", calib$Documents)     # remove numeric characters
+    a0_logi = (!duplicated(pdf_text2))                   # identify unique documents
+    pdf_text3 <- pdf_text2[a0_logi]                      # subset to unique documents
+    calib <- data.frame(Doc.id=seq(1,length(pdf_text3)), text = pdf_text3)  # update calib with Doc.ids and unique texts        
+    # +++ edit ends here.
+        
           print(input$file$name)
           return(calib)} else
       {
