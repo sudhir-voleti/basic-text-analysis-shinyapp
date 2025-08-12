@@ -366,10 +366,10 @@ edgelist_unitfunc <- function(colm0, max.connexns=5){
     uniq_toks = unique(c(edgelist1$to, edgelist1$from))
     ind_mat = data.frame(token0 = uniq_toks, tok_inds = seq(1:length(uniq_toks))); glimpse(ind_mat)
     edgelist2 = dplyr::inner_join(edgelist1, ind_mat, by = c("from" == "token0")) |>
-      rename(from_inds = tok_inds); glimpse(edgelist2)
+      dplyr::rename(from_inds = tok_inds); glimpse(edgelist2)
   
     edgelist2 = dplyr::inner_join(edgelist2, ind_mat, by = c("to" == "token0")) |>
-      rename(to_inds = tok_inds); glimpse(edgelist2)    
+      dplyr::rename(to_inds = tok_inds); glimpse(edgelist2)    
     #edgelist3 = edgelist2[(!duplicated(edgelist2$to)),]; #glimpse(edgelist3)
     edgelist3 = as.matrix(edgelist2[,1:2])
     gr = graph_from_edgelist(edgelist3)
@@ -401,7 +401,7 @@ drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.st
   
   ## piped workflow for stopword-removal from corpus
   a0 = raw_corpus |> data_frame() |> 
-    mutate(docID = row_number()) |> rename(text = ".") |> select(docID, text) |>
+    mutate(docID = row_number()) |> dplyr::rename(text = ".") |> select(docID, text) |>
     
     # sentence-tokenize and build sentence layer
     unnest_tokens(sentence, text, token = "sentences") |> 
