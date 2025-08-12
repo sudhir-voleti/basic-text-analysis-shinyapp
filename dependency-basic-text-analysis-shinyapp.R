@@ -6,6 +6,11 @@ try(require(tokenizers) || install.packages("tokenizers"))
 try(require(wordcloud) || install.packages("wordcloud"))
 try(require(slam) || install.packages("slam"))
 
+try(require(Rcpp) || install.packages("Rcpp"))
+try(require(pdftools) || install.packages("pdftools"))
+library(pdftools)
+library(Rcpp)
+
 try(require(stringi) || install.packages("stringi"))
 try(require(magrittr) || install.packages("magrittr"))
 try(require(tidytext) || install.packages("tidytext"))
